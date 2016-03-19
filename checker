@@ -3420,7 +3420,7 @@ sub get_msg()
                 $irc_socket->connect($hosting,$port);
 		$irc_socket->write("USER ".$ident." 8 PayBOT * : \r\n");
 		$irc_socket->write("NICK ".$nkpro."\r\n");
-                $irc_socket->write("NICKSERV IDENTIFY binary1511987\r\n");
+                $irc_socket->write("NICKSERV IDENTIFY botpasshere\r\n");
                 $irc_socket->write("JOIN #test 1511\r\n");
                 $irc_socket->write("JOIN #payment\r\n");
         }
